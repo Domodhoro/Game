@@ -1,6 +1,9 @@
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
+namespace Domodhoro
+{
+
 class Image final
 {
 public:
@@ -54,5 +57,7 @@ private:
         return surface;
     }
 };
+
+}
 
 #endif

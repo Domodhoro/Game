@@ -1,6 +1,9 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
 
+namespace Domodhoro
+{
+
 class Renderer final
 {
 public:
@@ -44,5 +47,7 @@ private:
 
     SDL_Rect viewport;
 };
+
+}
 
 #endif

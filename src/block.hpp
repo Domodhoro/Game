@@ -1,6 +1,9 @@
 #ifndef BLOCK_HPP
 #define BLOCK_HPP
 
+namespace Domodhoro
+{
+
 class Block final : public Game_Object
 {
 public:
@@ -20,5 +23,7 @@ public:
 private:
     int type;
 };
+
+}
 
 #endif

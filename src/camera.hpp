@@ -1,6 +1,9 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+namespace Domodhoro
+{
+
 class Camera final
 {
 public:
@@ -22,5 +25,7 @@ public:
 private:
     SDL_Point position;
 };
+
+}
 
 #endif

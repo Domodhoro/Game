@@ -1,6 +1,9 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
+namespace Domodhoro
+{
+
 class Entity final : public Game_Object
 {
 public:
@@ -41,5 +44,7 @@ public:
         destination_rect.y += 1;
     }
 };
+
+}
 
 #endif

@@ -1,6 +1,9 @@
 #ifndef QUADTREE_HPP
 #define QUADTREE_HPP
 
+namespace Domodhoro
+{
+
 class Quadtree final
 {
 public:
@@ -127,5 +130,7 @@ private:
         }
     }
 };
+
+}
 
 #endif

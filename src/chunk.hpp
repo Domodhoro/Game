@@ -1,6 +1,9 @@
 #ifndef CHUNK_HPP
 #define CHUNK_HPP
 
+namespace Domodhoro
+{
+
 class Chunk final
 {
 public:
@@ -78,5 +81,7 @@ private:
         }
     }
 };
+
+}
 
 #endif

@@ -1,6 +1,9 @@
 #ifndef SOUND_HPP
 #define SOUND_HPP
 
+namespace Domodhoro
+{
+
 class Sound final
 {
 public:
@@ -57,5 +60,7 @@ public:
 private:
     std::map<std::string, Mix_Music*> musics;
 };
+
+}
 
 #endif

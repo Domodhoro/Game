@@ -1,6 +1,9 @@
 #ifndef LUA_CONFIG_HPP
 #define LUA_CONFIG_HPP
 
+namespace Domodhoro
+{
+
 class Lua_Config final
 {
 public:
@@ -33,5 +36,7 @@ public:
 private:
     lua_State* L;
 };
+
+}
 
 #endif

@@ -10,6 +10,7 @@ extern "C"
 #include "./lib/lua54/lauxlib.h"
 
 #define FNL_IMPL
+
 #include "lib/FastNoiseLite/FastNoiseLite.h"
 }
 
@@ -20,6 +21,10 @@ extern "C"
 #include <vector>
 #include <map>
 #include <unordered_set>
+
+#define GRAVITY false
+#define COLLISION true
+#define WORLD_BORDER true
 
 #include "./src/game_exception.hpp"
 #include "./src/lua_config.hpp"
@@ -43,7 +48,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        Game game("Game Prototype 1", 640, 480);
+        Domodhoro::Game game("Game Prototype 1", 640, 480);
 
         Uint32 frame_start = 0;
         Uint32 frame_end = 0;
@@ -61,7 +66,7 @@ int main(int argc, char* argv[])
             game.set_FPS(FPS, frame_end - frame_start);
         }
     }
-    catch (const Game_Exception& e)
+    catch (const Domodhoro::Game_Exception& e)
     {
         std::cerr << e.what() << std::endl;
 

@@ -1,6 +1,9 @@
 #ifndef GAME_EXCEPTION_HPP
 #define GAME_EXCEPTION_HPP
 
+namespace Domodhoro
+{
+
 class Game_Exception final : public std::exception
 {
 public:
@@ -28,5 +31,7 @@ private:
 
     mutable std::string error_message;
 };
+
+}
 
 #endif

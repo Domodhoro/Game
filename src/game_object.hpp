@@ -1,6 +1,9 @@
 #ifndef GAME_OBJECT_HPP
 #define GAME_OBJECT_HPP
 
+namespace Domodhoro
+{
+
 class Game_Object
 {
 public:
@@ -49,5 +52,7 @@ protected:
     SDL_Rect source_rect;
     SDL_Rect destination_rect;
 };
+
+}
 
 #endif

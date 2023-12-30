@@ -1,6 +1,9 @@
 #ifndef NOISE_HPP
 #define NOISE_HPP
 
+namespace Domodhoro
+{
+
 class Noise final
 {
 public:
@@ -18,5 +21,7 @@ public:
 private:
     fnl_state noise;
 };
+
+}
 
 #endif

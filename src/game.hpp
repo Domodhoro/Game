@@ -1,6 +1,9 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
+namespace Domodhoro
+{
+
 class Game final
 {
 public:
@@ -70,78 +73,11 @@ public:
 
     void update()
     {
-        static const int player_velocity = 3;
+    	static const int player_velocity = 3;
+    	static const int gravity_velocity = 7;
 
-        for (const auto& it : keys)
-        {
-            switch (static_cast<int>(it))
-            {
-            case SDL_SCANCODE_ESCAPE:
-                running = false;
-                break;
-
-            case SDL_SCANCODE_G:
-                handle_gravity();
-                break;
-
-            case SDL_SCANCODE_W:
-                for (int step = 1; step <= player_velocity; step++)
-                {
-                    player->move_up();
-
-                    if (world->check_collision(player.get()))
-                    {
-                        player->move_down();
-                    }
-                }
-
-                player->set_source_rect({0, 960, 64, 64});
-                break;
-
-            case SDL_SCANCODE_A:
-                for (int step = 1; step <= player_velocity; step++)
-                {
-                    player->move_left();
-
-                    if (world->check_collision(player.get()))
-                    {
-                        player->move_right();
-                    }
-                }
-
-                player->set_source_rect({0, 960, 64, 64});
-                break;
-
-            case SDL_SCANCODE_S:
-                for (int step = 1; step <= player_velocity; step++)
-                {
-                    player->move_down();
-
-                    if (world->check_collision(player.get()))
-                    {
-                        player->move_up();
-                    }
-                }
-
-                player->set_source_rect({0, 896, 64, 64});
-                break;
-
-            case SDL_SCANCODE_D:
-                for (int step = 1; step <= player_velocity; step++)
-                {
-                    player->move_right();
-
-                    if (world->check_collision(player.get()))
-                    {
-                        player->move_left();
-                    }
-                }
-
-                player->set_source_rect({0, 896, 64, 64});
-                break;
-            }
-        }
-
+        move_player(player_velocity);
+		handle_gravity(gravity_velocity);    
         handle_player_boundaries();
         update_camera();
     }
@@ -203,10 +139,74 @@ private:
         player->set_source_rect({0, 960, 64, 64});
     }
 
-    void handle_gravity()
+    void move_player(const int player_velocity)
     {
-        static const int gravity_velocity = 7;
+        for (const auto& it : keys)
+        {
+            switch (static_cast<int>(it))
+            {
+            case SDL_SCANCODE_W:
+                for (int step = 1; step <= player_velocity; step++)
+                {
+                    player->move_up();
 
+                    if (world->check_collision(player.get()))
+                    {
+                        player->move_down();
+                    }
+                }
+
+                player->set_source_rect({0, 960, 64, 64});
+                break;
+
+            case SDL_SCANCODE_A:
+                for (int step = 1; step <= player_velocity; step++)
+                {
+                    player->move_left();
+
+                    if (world->check_collision(player.get()))
+                    {
+                        player->move_right();
+                    }
+                }
+
+                player->set_source_rect({0, 960, 64, 64});
+                break;
+
+            case SDL_SCANCODE_S:
+                for (int step = 1; step <= player_velocity; step++)
+                {
+                    player->move_down();
+
+                    if (world->check_collision(player.get()))
+                    {
+                        player->move_up();
+                    }
+                }
+
+                player->set_source_rect({0, 896, 64, 64});
+                break;
+
+            case SDL_SCANCODE_D:
+                for (int step = 1; step <= player_velocity; step++)
+                {
+                    player->move_right();
+
+                    if (world->check_collision(player.get()))
+                    {
+                        player->move_left();
+                    }
+                }
+
+                player->set_source_rect({0, 896, 64, 64});
+                break;
+            }
+        }
+    }
+
+    void handle_gravity(const int gravity_velocity)
+    {
+#if GRAVITY
         for (int step = 1; step <= gravity_velocity; step++)
         {
             player->apply_gravity();
@@ -216,10 +216,12 @@ private:
                 player->move_up();
             }
         }
+#endif
     }
 
     void handle_player_boundaries()
     {
+#if WORLD_BORDER
         SDL_Rect player_position = player->get_destination_rect();
 
         static const int world_bottom = (static_cast<int>(Chunk::HEIGHT) * static_cast<int>(Block::SIZE)) - player_position.h;
@@ -234,6 +236,7 @@ private:
         }
 
         player->set_destination_rect(player_position);
+#endif
     }
 
     void update_camera()
@@ -247,5 +250,7 @@ private:
         camera->set_position(camera_position);
     }
 };
+
+}
 
 #endif

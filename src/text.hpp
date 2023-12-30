@@ -1,6 +1,9 @@
 #ifndef TEXT_HPP
 #define TEXT_HPP
 
+namespace Domodhoro
+{
+
 class Text final
 {
 public:
@@ -41,5 +44,7 @@ public:
 private:
     std::map<std::string, TTF_Font*> fonts;
 };
+
+}
 
 #endif
