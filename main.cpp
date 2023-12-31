@@ -29,17 +29,18 @@ extern "C"
 #include "./src/game_exception.hpp"
 #include "./src/lua_config.hpp"
 #include "./src/sound.hpp"
-#include "./src/text.hpp"
+#include "./src/font.hpp"
 #include "./src/image.hpp"
 #include "./src/camera.hpp"
 #include "./src/game_object.hpp"
 #include "./src/block.hpp"
 #include "./src/entity.hpp"
+#include "./src/renderer.hpp"
+#include "./src/text.hpp"
 #include "./src/noise.hpp"
 #include "./src/quadtree.hpp"
 #include "./src/chunk.hpp"
 #include "./src/world.hpp"
-#include "./src/renderer.hpp"
 #include "./src/game.hpp"
 
 int main(int argc, char* argv[])
@@ -48,7 +49,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        Domodhoro::Game game("Game Prototype 1", 640, 480);
+        Domodhoro::Game game("Game", 640, 480);
 
         Uint32 frame_start = 0;
         Uint32 frame_end = 0;
