@@ -12,13 +12,11 @@ namespace Domodhoro
 			font->load("DEFAULT", "./font/04B_03__.TTF", 16);
 
 			texts.push_back(std::make_unique<Game_Object>());
-
-			show_player_coordinates(renderer, image, {0, 0});
 		}
 
 		void show_player_coordinates(Renderer* renderer, Image* image, const SDL_Point player_position)
         {
-            text_string = "(X : " + std::to_string(player_position.x) + ", Y : " + std::to_string(player_position.y) + ")";
+            std::string text_string = "(X : " + std::to_string(player_position.x) + ", Y : " + std::to_string(-1 * player_position.y) + ")";
 
             SDL_Surface* text_surface = image->create_surface(font->get("DEFAULT"), text_string, {255, 255, 255});
 
@@ -40,8 +38,6 @@ namespace Domodhoro
 		std::unique_ptr<Font> font;
 		
 		std::vector<std::unique_ptr<Game_Object>> texts;
-
-		std::string text_string;
 	};
 }
 
