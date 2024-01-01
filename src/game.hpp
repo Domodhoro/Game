@@ -39,7 +39,7 @@ namespace Domodhoro
 
         void init()
         {
-            lua_config = std::make_unique<Lua_Config>();
+            lua_config = std::make_unique<Lua_Config>("./config.lua");
             renderer = std::make_unique<Renderer>(window, SDL_Rect{0, 0, width, height});
             sound = std::make_unique<Sound>();
             image = std::make_unique<Image>();
@@ -47,8 +47,6 @@ namespace Domodhoro
             camera = std::make_unique<Camera>(SDL_Point{0, 0});
             player = std::make_unique<Player>(SDL_Rect{width / 2 - 50 / 2, height / 2 - 50 / 2, 50, 50});
             world = std::make_unique<World>(1007);
-
-            lua_config->load("./config.lua");
 
             SDL_Surface* player_surface = image->create_surface("./img/player.png");
             SDL_Surface* block_surface = image->create_surface("./img/block.png");
@@ -102,6 +100,8 @@ namespace Domodhoro
     		handle_gravity(gravity_velocity);    
             handle_player_boundaries();
             update_camera();
+
+            text->show_player_coordinates(renderer.get(), image.get(), player->get_destination_rect().x, player->get_destination_rect().y);
         }
 
         void render() const
