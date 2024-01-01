@@ -6,7 +6,7 @@ namespace Domodhoro
     class Lua_Config final
     {
     public:
-        Lua_Config() :
+        Lua_Config(const std::string& file_path) :
             L(luaL_newstate())
         {
             if (!L)
@@ -15,6 +15,13 @@ namespace Domodhoro
             }
 
             luaL_openlibs(L);
+
+            if (luaL_dofile(L, file_path.c_str()) != 0)
+            {
+                const char* message = lua_tostring(L, -1);
+
+                throw Game_Exception(message, __FILE__, __LINE__);
+            }
         }
 
         ~Lua_Config()
@@ -22,16 +29,6 @@ namespace Domodhoro
             if (L)
             {
                 lua_close(L);
-            }
-        }
-
-        void load(const std::string& file_path)
-        {
-            if (luaL_dofile(L, file_path.c_str()) != 0)
-            {
-                const char* message = lua_tostring(L, -1);
-
-                throw Game_Exception(message, __FILE__, __LINE__);
             }
         }
     private:
