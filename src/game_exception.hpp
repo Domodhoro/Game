@@ -6,29 +6,23 @@ namespace Domodhoro
     class Game_Exception final : public std::exception
     {
     public:
-        Game_Exception(const std::string& message, const std::string& file, const int line) :
+        Game_Exception(const char* error_message, const std::string& file, const int line) :
             message(message),
             file(file),
             line(line)
         {
-            
+            message = "File: " + file + "\nLine: " + std::to_string(line) + "\nError message: " + error_message;
         }
 
         const char* what() const noexcept override
         {
-            error_message = "Error : " + message              + "\n"
-                            "File  : " + file                 + "\n"
-                            "Line  : " + std::to_string(line) + "\n";
-            
-            return error_message.c_str();
+            return message.c_str();
         }
     private:
         std::string message;
         std::string file;
 
         int line;
-
-        mutable std::string error_message;
     };
 }
 
