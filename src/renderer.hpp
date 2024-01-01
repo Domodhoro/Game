@@ -41,6 +41,26 @@ namespace Domodhoro
             SDL_RenderCopy(renderer, texture, &source_rect, &temp_destination_rect);
         }
 
+        void render(SDL_Texture* texture, const SDL_Point position, const SDL_Rect source_rect, const SDL_Rect destination_rect, const double angle) const
+        {
+            SDL_Rect temp_destination_rect = destination_rect;
+            
+            temp_destination_rect.x -= position.x;
+            temp_destination_rect.y -= position.y;
+
+            SDL_RenderCopyEx(renderer, texture, &source_rect, &temp_destination_rect, angle, nullptr, SDL_FLIP_NONE);
+        }
+
+        void render(SDL_Texture* texture, const SDL_Rect destination_rect) const
+        {
+            SDL_RenderCopy(renderer, texture, nullptr, &destination_rect);
+        }
+
+        void render(SDL_Texture* texture, const SDL_Rect destination_rect, const double angle) const
+        {
+            SDL_RenderCopyEx(renderer, texture, nullptr, &destination_rect, angle, nullptr, SDL_FLIP_NONE);
+        }
+
         void present() const
         {
             SDL_RenderSetViewport(renderer, &viewport);

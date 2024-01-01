@@ -58,7 +58,7 @@ namespace Domodhoro
             textures[ID] = texture;
         }
 
-        SDL_Texture* use(const std::string& ID)
+        SDL_Texture* get(const std::string& ID)
         {
             return textures[ID];
         }

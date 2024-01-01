@@ -110,7 +110,7 @@ namespace Domodhoro
 
             world->render(renderer.get(), image.get(), camera->get_position());
 
-            renderer->render(image->use("PLAYER"), camera->get_position(), player->get_source_rect(), player->get_destination_rect());
+            renderer->render(image->get("PLAYER"), camera->get_position(), player->get_source_rect(), player->get_destination_rect());
 
             text->render(renderer.get(), image.get());
             

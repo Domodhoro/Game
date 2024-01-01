@@ -59,7 +59,7 @@ namespace Domodhoro
             {
                 it->set_source_rect({0, 496, 16, 16});
                 
-                renderer->render(image->use("BLOCK"), camera_position, it->get_source_rect(), it->get_destination_rect());
+                renderer->render(image->get("BLOCK"), camera_position, it->get_source_rect(), it->get_destination_rect());
             }
         }
     private:

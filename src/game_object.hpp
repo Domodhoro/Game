@@ -6,6 +6,20 @@ namespace Domodhoro
     class Game_Object
     {
     public:
+        Game_Object() :
+            source_rect({0, 0, 0, 0}),
+            destination_rect({0, 0, 0, 0})
+        {
+
+        }
+
+        Game_Object(const SDL_Rect& destination_rect) :
+            source_rect({0, 0, 0, 0}),
+            destination_rect(destination_rect)
+        {
+
+        }
+
         Game_Object(const SDL_Rect& source_rect, const SDL_Rect& destination_rect) :
             source_rect(source_rect),
             destination_rect(destination_rect)
