@@ -101,7 +101,7 @@ namespace Domodhoro
             handle_player_boundaries();
             update_camera();
 
-            text->show_player_coordinates(renderer.get(), image.get(), player->get_destination_rect().x, player->get_destination_rect().y);
+            text->show_player_coordinates(renderer.get(), image.get(), camera->get_position());
         }
 
         void render() const
