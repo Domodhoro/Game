@@ -36,7 +36,7 @@ namespace Domodhoro
 
         SDL_Surface* create_surface(TTF_Font* font, const std::string& text, const SDL_Color& color)
         {
-            SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+            SDL_Surface* surface = TTF_RenderText_Blended(font, text.c_str(), color);
 
             if (!surface)
             {

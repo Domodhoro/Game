@@ -68,30 +68,10 @@ namespace Domodhoro
             const int w = boundary.w / 2;
             const int h = boundary.h / 2;
 
-            const SDL_Rect ne =
-            {
-                x + w, y, w, h
-            };
-
-            const SDL_Rect nw =
-            {
-                x, y, w, h
-            };
-
-            const SDL_Rect se =
-            {
-                x + w, y + h, w, h
-            };
-
-            const SDL_Rect sw =
-            {
-                x, y + h, w, h
-            };
-
-            northeast = std::make_unique<Quadtree>(ne, capacity);
-            northwest = std::make_unique<Quadtree>(nw, capacity);
-            southeast = std::make_unique<Quadtree>(se, capacity);
-            southwest = std::make_unique<Quadtree>(sw, capacity);
+            northeast = std::make_unique<Quadtree>(SDL_Rect{x + w, y, w, h}, capacity);
+            northwest = std::make_unique<Quadtree>(SDL_Rect{x, y, w, h}, capacity);
+            southeast = std::make_unique<Quadtree>(SDL_Rect{x + w, y + h, w, h}, capacity);
+            southwest = std::make_unique<Quadtree>(SDL_Rect{x, y + h, w, h}, capacity);
 
             divided = true;
         }
@@ -110,13 +90,13 @@ namespace Domodhoro
                 return;
             }
 
-            for (Block* block : blocks)
+            for (const auto& it : blocks)
             {
-                const SDL_Rect rect = block->get_destination_rect();
+                const SDL_Rect rect = it->get_destination_rect();
 
                 if (SDL_HasIntersection(&rect, &range))
                 {
-                    found_blocks.push_back(block);
+                    found_blocks.push_back(it);
                 }
             }
 

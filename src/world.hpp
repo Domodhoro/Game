@@ -8,6 +8,8 @@ namespace Domodhoro
     public:
         World(const int seed)
         {
+            chunks.reserve(4);
+
             const int gap = static_cast<int>(Block::WIDTH);
 
             for (int i = 0; i < 4; i++)

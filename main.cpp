@@ -54,8 +54,8 @@ int main(int argc, char* argv[])
 
         game.init();
 
-        Uint32 frame_start = 0;
-        Uint32 frame_end = 0;
+        static Uint32 frame_start = 0;
+        static Uint32 frame_end = 0;
 
         while (game.is_running())
         {

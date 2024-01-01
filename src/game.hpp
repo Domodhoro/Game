@@ -16,8 +16,8 @@ namespace Domodhoro
                 throw Game_Exception("Falha ao iniciar o SDL.", __FILE__, __LINE__);
             }
 
-            const int x = SDL_WINDOWPOS_UNDEFINED;
-            const int y = SDL_WINDOWPOS_UNDEFINED;
+            static const int x = SDL_WINDOWPOS_UNDEFINED;
+            static const int y = SDL_WINDOWPOS_UNDEFINED;
 
             window = SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 

@@ -9,11 +9,13 @@ namespace Domodhoro
 		Text(Renderer* renderer, Image* image) :
 			font(std::make_unique<Font>())
 		{
-			font->load("04B_03__", "./font/04B_03__.TTF", 8);
+			font->load("DEFAULT", "./font/04B_03__.TTF", 16);
 
-			texts.push_back(std::make_unique<Game_Object>(SDL_Rect{10, 10, 100, 16}));
+			texts.push_back(std::make_unique<Game_Object>());
 
-			SDL_Surface* text_surface = image->create_surface(font->get("04B_03__"), "Hello, world!", {0, 0, 0});
+			SDL_Surface* text_surface = image->create_surface(font->get("DEFAULT"), "(X : 0, Y : 0)", {0, 255, 0});
+
+			texts.back()->set_destination_rect(SDL_Rect{16, 16, text_surface->w, text_surface->h});
 			
 			image->load(renderer->get(), text_surface, "TEXT_1");
 
