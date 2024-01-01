@@ -94,9 +94,10 @@ namespace Domodhoro
         void update()
         {
         	static const int player_velocity = 3;
+            static const int jump_velocity = 7;
         	static const int gravity_velocity = 7;
 
-            move_player(player_velocity);
+            move_player(player_velocity, jump_velocity);
     		handle_gravity(gravity_velocity);    
             handle_player_boundaries();
             update_camera();
@@ -148,7 +149,7 @@ namespace Domodhoro
         std::unique_ptr<Player> player;
         std::unique_ptr<World> world;
 
-        void move_player(const int player_velocity)
+        void move_player(const int player_velocity, const int jump_velocity)
         {
             for (const auto& it : keys)
             {
@@ -211,7 +212,15 @@ namespace Domodhoro
                     break;
 
                 case SDL_SCANCODE_SPACE:
-                    
+                    for (int step = 1; step <= jump_velocity; step++)
+                    {
+                        player->jump();
+
+                        if (world->check_collision(player.get()))
+                        {
+                            player->move_down();
+                        }
+                    }
                     break;
                 }
             }

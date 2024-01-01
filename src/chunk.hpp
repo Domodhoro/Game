@@ -28,7 +28,7 @@ namespace Domodhoro
                             block_x, block_y, Block::WIDTH, Block::HEIGHT
                         };
 
-                        blocks.push_back(std::make_unique<Block>(destination_rect, static_cast<int>(Block::TYPE::DIRT)));
+                        blocks.push_back(std::make_unique<Block>(destination_rect, Block::TYPE::DIRT));
                     }
                 }
             }
@@ -38,13 +38,18 @@ namespace Domodhoro
             update_quadtree(x, y, quadtree_capacity);
         }
 
+        Block::TYPE get_block_type_at(const int x, const int y) const
+        {
+            return blocks.at(x + y * WIDTH)->get_type();
+        }
+
         bool check_collision(const Entity* player) const
         {
             SDL_Rect rect_1 = player->get_destination_rect();
 
-            for (const Block* block : quadtree->query(rect_1))
+            for (const auto& it : quadtree->query(rect_1))
             {
-                SDL_Rect rect_2 = block->get_destination_rect();
+                SDL_Rect rect_2 = it->get_destination_rect();
 
                 if (SDL_HasIntersection(&rect_1, &rect_2))
                 {
