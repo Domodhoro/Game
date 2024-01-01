@@ -13,7 +13,7 @@ namespace Domodhoro
         {
             if (SDL_Init(SDL_INIT_VIDEO) < 0)
             {
-                throw Game_Exception("Falha ao iniciar o SDL.", __FILE__, __LINE__);
+                throw Game_Exception(SDL_GetError(), __FILE__, __LINE__);
             }
 
             static const int x = SDL_WINDOWPOS_UNDEFINED;
@@ -23,7 +23,7 @@ namespace Domodhoro
 
             if (!window)
             {
-                throw Game_Exception("Falha ao criar janela de visualização.", __FILE__, __LINE__);
+                throw Game_Exception(SDL_GetError(), __FILE__, __LINE__);
             }
         }
 

@@ -11,7 +11,7 @@ namespace Domodhoro
         {
             if (!L)
             {
-                throw Game_Exception("Falha ao criar estado lua.", __FILE__, __LINE__);
+                throw Game_Exception("Failed to create Lua state.", __FILE__, __LINE__);
             }
 
             luaL_openlibs(L);
@@ -29,7 +29,9 @@ namespace Domodhoro
         {
             if (luaL_dofile(L, file_path.c_str()) != 0)
             {
-                throw Game_Exception("Falha ao ler arquivo de configuração: " + file_path, __FILE__, __LINE__);
+                const char* message = lua_tostring(L, -1);
+
+                throw Game_Exception(message, __FILE__, __LINE__);
             }
         }
     private:

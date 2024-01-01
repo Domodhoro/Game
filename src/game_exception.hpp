@@ -11,14 +11,14 @@ namespace Domodhoro
             file(file),
             line(line)
         {
-            std::cout << "Descrição interna (SDL) do erro: " << SDL_GetError() << std::endl;
+            
         }
 
         const char* what() const noexcept override
         {
-            error_message = "File    : " + file                 + "\n"
-                            "Line    : " + std::to_string(line) + "\n"
-                            "Message : " + message              + "\n";
+            error_message = "Error : " + message              + "\n"
+                            "File  : " + file                 + "\n"
+                            "Line  : " + std::to_string(line) + "\n";
             
             return error_message.c_str();
         }

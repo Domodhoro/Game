@@ -10,7 +10,7 @@ namespace Domodhoro
         {
             if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
             {
-                throw Game_Exception("Falha ao inicializar o SDL_mixer.", __FILE__, __LINE__);
+                throw Game_Exception(Mix_GetError(), __FILE__, __LINE__);
             }
         }
 
@@ -30,7 +30,7 @@ namespace Domodhoro
 
             if (!musics[music_name])
             {
-                throw Game_Exception("Falha ao carregar música: " + file_path, __FILE__, __LINE__);
+                throw Game_Exception(Mix_GetError(), __FILE__, __LINE__);
             }
         }
 

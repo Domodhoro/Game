@@ -13,7 +13,7 @@ namespace Domodhoro
 
             if (!renderer)
             {
-                throw Game_Exception("Falha ao iniciar o renderizador.", __FILE__, __LINE__);
+                throw Game_Exception(SDL_GetError(), __FILE__, __LINE__);
             }
         }
 

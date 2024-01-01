@@ -10,7 +10,7 @@ namespace Domodhoro
         {
             if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
             {
-                throw Game_Exception("Falha ao iniciar o SDL_image.", __FILE__, __LINE__);
+                throw Game_Exception(IMG_GetError(), __FILE__, __LINE__);
             }
         }
 
@@ -28,7 +28,7 @@ namespace Domodhoro
 
             if (!surface)
             {
-                throw Game_Exception("Falha ao criar superfície de: " + texture_path, __FILE__, __LINE__);
+                throw Game_Exception(IMG_GetError(), __FILE__, __LINE__);
             }
 
             return surface;
@@ -40,7 +40,7 @@ namespace Domodhoro
 
             if (!surface)
             {
-                throw Game_Exception("Falha ao carregar textura (texto):", __FILE__, __LINE__);
+                throw Game_Exception(IMG_GetError(), __FILE__, __LINE__);
             }
 
             return surface;
@@ -52,7 +52,7 @@ namespace Domodhoro
 
             if (!texture)
             {
-                throw Game_Exception("Falha ao criar textura.", __FILE__, __LINE__);
+                throw Game_Exception(IMG_GetError(), __FILE__, __LINE__);
             }
 
             textures[ID] = texture;

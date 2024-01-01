@@ -13,7 +13,7 @@ namespace Domodhoro
 
 			texts.push_back(std::make_unique<Game_Object>());
 
-			SDL_Surface* text_surface = image->create_surface(font->get("DEFAULT"), "(X : 0, Y : 0)", {0, 255, 0});
+			SDL_Surface* text_surface = image->create_surface(font->get("DEFAULT"), "(X : 0, Y : 0)", {255, 255, 255});
 
 			texts.back()->set_destination_rect(SDL_Rect{16, 16, text_surface->w, text_surface->h});
 			

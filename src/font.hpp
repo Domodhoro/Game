@@ -10,7 +10,7 @@ namespace Domodhoro
         {
             if (TTF_Init() == -1)
             {
-                throw Game_Exception("Falha ao iniciar o SDL_ttf.", __FILE__, __LINE__);
+                throw Game_Exception(TTF_GetError(), __FILE__, __LINE__);
             }
         }
 
@@ -30,7 +30,7 @@ namespace Domodhoro
 
             if (!font)
             {
-                throw Game_Exception("Falha ao carregar arquivo fonte.", __FILE__, __LINE__);
+                throw Game_Exception(TTF_GetError(), __FILE__, __LINE__);
             }
 
             fonts[ID] = font;
