@@ -3,29 +3,38 @@
 
 namespace Domodhoro
 {
-	
-class Text final
-{
-public:
-	Text(Renderer* renderer, Image* image)
+	class Text final
 	{
-		font = std::make_unique<Font>();
-		text = std::make_unique<Game_Object>(SDL_Rect{0, 0, 0, 0}, SDL_Rect{10, 10, 138, 26});
+	public:
+		Text(Renderer* renderer, Image* image)
+		{
+			font = std::make_unique<Font>();
+			
+			font->load("04B_03__", "./font/04B_03__.TTF", 16);
 
-		text->set_source_rect({0, 0, 128, 16});
-		font->load("04B_03__", "./font/04B_03__.TTF", 16);
-		image->load(renderer->get(), "TEXT_1", font->get("04B_03__"), "Hello, world!", {0, 255, 0});
-	}
+			texts.push_back(std::make_unique<Game_Object>(SDL_Rect{0, 0, 0, 0}, SDL_Rect{10, 10, 138, 26}));
 
-	void render(Renderer* renderer, Image* image)
-	{
-		renderer->render(image->use("TEXT_1"), SDL_Point{0, 0}, text->get_source_rect(), text->get_destination_rect());
-	}
-private:
-	std::unique_ptr<Font> font;
-	std::unique_ptr<Game_Object> text;
-};
+			texts.back()->set_source_rect({0, 0, 128, 16});
 
+			SDL_Surface* text_surface = image->create_surface(font->get("04B_03__"), "Hello, world!", {0, 255, 0});
+			
+			image->load(renderer->get(), text_surface, "TEXT_1");
+
+			SDL_FreeSurface(text_surface);
+		}
+
+		void render(Renderer* renderer, Image* image) const
+		{
+			for (const auto& it : texts)
+			{
+				renderer->render(image->use("TEXT_1"), SDL_Point{0, 0}, it->get_source_rect(), it->get_destination_rect());
+			}
+		}
+	private:
+		std::unique_ptr<Font> font;
+		
+		std::vector<std::unique_ptr<Game_Object>> texts;
+	};
 }
 
 #endif

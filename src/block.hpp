@@ -3,27 +3,26 @@
 
 namespace Domodhoro
 {
-
-class Block final : public Game_Object
-{
-public:
-    static const int SIZE = 10;
-
-    enum class TYPE : int
+    class Block final : public Game_Object
     {
-        DIRT = 1
+    public:
+        static const int WIDTH = 10;
+        static const int HEIGHT = 10;
+
+        enum class TYPE : int
+        {
+            DIRT = 1
+        };
+
+        Block(const SDL_Rect& destination_rect, const int type) :
+            Game_Object(SDL_Rect{0, 0, 0, 0}, destination_rect),
+            type(type)
+        {
+
+        }
+    private:
+        int type;
     };
-
-    Block(const SDL_Rect& destination_rect, const int type) :
-        Game_Object(SDL_Rect{0, 0, 0, 0}, destination_rect),
-        type(type)
-    {
-
-    }
-private:
-    int type;
-};
-
 }
 
 #endif

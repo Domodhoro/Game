@@ -3,40 +3,38 @@
 
 namespace Domodhoro
 {
-
-class Lua_Config final
-{
-public:
-    Lua_Config() :
-        L(luaL_newstate())
+    class Lua_Config final
     {
-        if (!L)
+    public:
+        Lua_Config() :
+            L(luaL_newstate())
         {
-            throw Game_Exception("Falha ao criar estado lua.", __FILE__, __LINE__);
+            if (!L)
+            {
+                throw Game_Exception("Falha ao criar estado lua.", __FILE__, __LINE__);
+            }
+
+            luaL_openlibs(L);
         }
 
-        luaL_openlibs(L);
-    }
-
-    ~Lua_Config()
-    {
-        if (L)
+        ~Lua_Config()
         {
-            lua_close(L);
+            if (L)
+            {
+                lua_close(L);
+            }
         }
-    }
 
-    void load(const std::string& file_path)
-    {
-        if (luaL_dofile(L, file_path.c_str()) != 0)
+        void load(const std::string& file_path)
         {
-            throw Game_Exception("Falha ao ler arquivo de configuração: " + file_path, __FILE__, __LINE__);
+            if (luaL_dofile(L, file_path.c_str()) != 0)
+            {
+                throw Game_Exception("Falha ao ler arquivo de configuração: " + file_path, __FILE__, __LINE__);
+            }
         }
-    }
-private:
-    lua_State* L;
-};
-
+    private:
+        lua_State* L;
+    };
 }
 
 #endif

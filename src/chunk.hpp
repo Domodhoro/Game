@@ -3,85 +3,86 @@
 
 namespace Domodhoro
 {
-
-class Chunk final
-{
-public:
-    static const int WIDTH = 16;
-    static const int HEIGHT = 256;
-
-    Chunk(const int x, const int y, const int seed) :
-        noise(std::make_unique<Noise>(seed))
+    class Chunk final
     {
-        for (int i = 0; i < WIDTH; i++)
+    public:
+        static const int WIDTH = 16;
+        static const int HEIGHT = 256;
+
+        Chunk(const int x, const int y, const int seed) :
+            noise(std::make_unique<Noise>(seed))
         {
-            for (int j = 0; j < HEIGHT; j++)
+            for (int i = 0; i < WIDTH; i++)
             {
-                const int block_x = x + i * Block::SIZE;
-                const int block_y = y + j * Block::SIZE;
-
-                if (noise->get(block_x, block_y) > 0.75f)
+                for (int j = 0; j < HEIGHT; j++)
                 {
-                    const SDL_Rect destination_rect =
-                    {
-                        block_x, block_y, Block::SIZE, Block::SIZE
-                    };
+                    const int block_x = x + i * Block::WIDTH;
+                    const int block_y = y + j * Block::HEIGHT;
 
-                    blocks.push_back(std::make_unique<Block>(destination_rect, static_cast<int>(Block::TYPE::DIRT)));
+                    if (noise->get(block_x, block_y) > 0.75f)
+                    {
+                        const SDL_Rect destination_rect =
+                        {
+                            block_x, block_y, Block::WIDTH, Block::HEIGHT
+                        };
+
+                        blocks.push_back(std::make_unique<Block>(destination_rect, static_cast<int>(Block::TYPE::DIRT)));
+                    }
                 }
             }
+
+            static const int quadtree_capacity = 4;
+
+            update_quadtree(x, y, quadtree_capacity);
         }
 
-        update_quadtree(x, y);
-    }
-
-    bool check_collision(const Entity* player) const
-    {
-        SDL_Rect rect_1 = player->get_destination_rect();
-
-        for (const Block* block : quadtree->query(rect_1))
+        bool check_collision(const Entity* player) const
         {
-            SDL_Rect rect_2 = block->get_destination_rect();
+            SDL_Rect rect_1 = player->get_destination_rect();
 
-            if (SDL_HasIntersection(&rect_1, &rect_2))
+            for (const Block* block : quadtree->query(rect_1))
             {
-                return true;
+                SDL_Rect rect_2 = block->get_destination_rect();
+
+                if (SDL_HasIntersection(&rect_1, &rect_2))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        void render(Renderer* renderer, Image* image, const SDL_Point& camera_position) const
+        {
+            for (const auto& it : blocks)
+            {
+                it->set_source_rect({0, 496, 16, 16});
+                
+                renderer->render(image->use("BLOCK"), camera_position, it->get_source_rect(), it->get_destination_rect());
             }
         }
+    private:
+        std::vector<std::unique_ptr<Block>> blocks;
 
-        return false;
-    }
+        std::unique_ptr<Noise> noise;
+        std::unique_ptr<Quadtree> quadtree;
 
-    void render(Renderer* renderer, Image* image, const SDL_Point& camera_position) const
-    {
-        for (const auto& it : blocks)
+        void update_quadtree(const int x, const int y, const int capacity)
         {
-            it->set_source_rect({0, 496, 16, 16});
-            renderer->render(image->use("BLOCK"), camera_position, it->get_source_rect(), it->get_destination_rect());
+            const SDL_Rect chunk_bounds =
+            {
+                x, y, x + WIDTH * Block::WIDTH, y + HEIGHT * Block::HEIGHT
+            };
+
+            quadtree = std::make_unique<Quadtree>(chunk_bounds, capacity);
+
+            for (const auto& block : blocks)
+            {
+                quadtree->insert(block.get());
+            }
         }
-    }
-private:
-    std::vector<std::unique_ptr<Block>> blocks;
-
-    std::unique_ptr<Noise> noise;
-    std::unique_ptr<Quadtree> quadtree;
-
-    void update_quadtree(const int x, const int y)
-    {
-        const SDL_Rect chunk_bounds =
-        {
-            x, y, x + WIDTH * Block::SIZE, y + HEIGHT * Block::SIZE
-        };
-
-        quadtree = std::make_unique<Quadtree>(chunk_bounds, 4);
-
-        for (const auto& block : blocks)
-        {
-            quadtree->insert(block.get());
-        }
-    }
-};
-
+    };
 }
 
 #endif

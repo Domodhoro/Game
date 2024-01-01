@@ -3,61 +3,59 @@
 
 namespace Domodhoro
 {
-
-class Renderer final
-{
-public:
-    Renderer(SDL_Window* window, const SDL_Rect& viewport) :
-        viewport(viewport)
+    class Renderer final
     {
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-
-        if (!renderer)
+    public:
+        Renderer(SDL_Window* window, const SDL_Rect& viewport) :
+            viewport(viewport)
         {
-            throw Game_Exception("Falha ao iniciar o renderizador.", __FILE__, __LINE__);
-        }
-    }
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
-    ~Renderer()
-    {
-        if (renderer)
+            if (!renderer)
+            {
+                throw Game_Exception("Falha ao iniciar o renderizador.", __FILE__, __LINE__);
+            }
+        }
+
+        ~Renderer()
         {
-            SDL_DestroyRenderer(renderer);
+            if (renderer)
+            {
+                SDL_DestroyRenderer(renderer);
+            }
         }
-    }
 
-    void clear(const Uint8 red, const Uint8 green, const Uint8 blue) const
-    {
-        SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
-        SDL_RenderClear(renderer);
-    }
+        void clear(const SDL_Color color, const Uint8 alpha) const
+        {
+            SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, alpha);
+            SDL_RenderClear(renderer);
+        }
 
-    void render(SDL_Texture* texture, const SDL_Point position, const SDL_Rect source_rect, const SDL_Rect destination_rect) const
-    {
-        SDL_Rect temp_destination_rect = destination_rect;
-        
-        temp_destination_rect.x -= position.x;
-        temp_destination_rect.y -= position.y;
+        void render(SDL_Texture* texture, const SDL_Point position, const SDL_Rect source_rect, const SDL_Rect destination_rect) const
+        {
+            SDL_Rect temp_destination_rect = destination_rect;
+            
+            temp_destination_rect.x -= position.x;
+            temp_destination_rect.y -= position.y;
 
-        SDL_RenderCopy(renderer, texture, &source_rect, &temp_destination_rect);
-    }
+            SDL_RenderCopy(renderer, texture, &source_rect, &temp_destination_rect);
+        }
 
-    void present() const
-    {
-        SDL_RenderSetViewport(renderer, &viewport);
-        SDL_RenderPresent(renderer);
-    }
+        void present() const
+        {
+            SDL_RenderSetViewport(renderer, &viewport);
+            SDL_RenderPresent(renderer);
+        }
 
-    SDL_Renderer* get() const
-    {
-        return renderer;
-    }
-private:
-    SDL_Renderer* renderer;
+        SDL_Renderer* get() const
+        {
+            return renderer;
+        }
+    private:
+        SDL_Renderer* renderer;
 
-    SDL_Rect viewport;
-};
-
+        SDL_Rect viewport;
+    };
 }
 
 #endif

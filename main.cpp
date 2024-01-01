@@ -35,6 +35,7 @@ extern "C"
 #include "./src/game_object.hpp"
 #include "./src/block.hpp"
 #include "./src/entity.hpp"
+#include "./src/player.hpp"
 #include "./src/renderer.hpp"
 #include "./src/text.hpp"
 #include "./src/noise.hpp"
@@ -50,6 +51,8 @@ int main(int argc, char* argv[])
     try
     {
         Domodhoro::Game game("Game", 640, 480);
+
+        game.init();
 
         Uint32 frame_start = 0;
         Uint32 frame_end = 0;

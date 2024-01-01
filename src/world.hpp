@@ -3,45 +3,43 @@
 
 namespace Domodhoro
 {
-
-class World final
-{
-public:
-    World(const int seed)
+    class World final
     {
-        const int gap = static_cast<int>(Block::SIZE);
-
-        for (int i = 0; i < 4; i++)
+    public:
+        World(const int seed)
         {
-            chunks.push_back(std::make_unique<Chunk>(i * Chunk::WIDTH * gap, 0, seed));
-        }
-    }
+            const int gap = static_cast<int>(Block::WIDTH);
 
-    bool check_collision(const Entity* player) const
-    {
-#if COLLISION
-        for (const auto& it : chunks)
-        {
-            if (it->check_collision(player))
+            for (int i = 0; i < 4; i++)
             {
-                return true;
+                chunks.push_back(std::make_unique<Chunk>(i * Chunk::WIDTH * gap, 0, seed));
             }
         }
-#endif
-        return false;
-    }
 
-    void render(Renderer* renderer, Image* image, const SDL_Point& camera_position) const
-    {
-        for (const auto& it : chunks)
+        bool check_collision(const Entity* player) const
         {
-            it->render(renderer, image, camera_position);
+#if COLLISION
+            for (const auto& it : chunks)
+            {
+                if (it->check_collision(player))
+                {
+                    return true;
+                }
+            }
+#endif
+            return false;
         }
-    }
-private:
-    std::vector<std::unique_ptr<Chunk>> chunks;
-};
 
+        void render(Renderer* renderer, Image* image, const SDL_Point& camera_position) const
+        {
+            for (const auto& it : chunks)
+            {
+                it->render(renderer, image, camera_position);
+            }
+        }
+    private:
+        std::vector<std::unique_ptr<Chunk>> chunks;
+    };
 }
 
 #endif
