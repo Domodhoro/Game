@@ -25,6 +25,7 @@ extern "C"
 #define GRAVITY false
 #define COLLISION true
 #define WORLD_BORDER true
+#define SHOW_TEXTS true
 
 #include "./src/game_exception.hpp"
 #include "./src/lua_config.hpp"

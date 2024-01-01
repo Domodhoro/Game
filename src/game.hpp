@@ -100,8 +100,9 @@ namespace Domodhoro
     		handle_gravity(gravity_velocity);    
             handle_player_boundaries();
             update_camera();
-
+#if SHOW_TEXTS
             text->show_player_coordinates(renderer.get(), image.get(), camera->get_position());
+#endif
         }
 
         void render() const
