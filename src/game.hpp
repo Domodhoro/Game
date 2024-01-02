@@ -93,12 +93,12 @@ namespace Domodhoro
 
         void update()
         {
-        	static const int player_velocity = 3;
-            static const int jump_velocity = 7;
+        	static const int player_velocity = 2;
+            static const int jump_velocity = 14;
         	static const int gravity_velocity = 7;
-
+  
+            handle_gravity(gravity_velocity);
             move_player(player_velocity, jump_velocity);
-    		handle_gravity(gravity_velocity);    
             handle_player_boundaries();
             update_camera();
 #if SHOW_TEXTS
@@ -149,6 +149,8 @@ namespace Domodhoro
         std::unique_ptr<Player> player;
         std::unique_ptr<World> world;
 
+        bool player_is_floor = false;
+
         void move_player(const int player_velocity, const int jump_velocity)
         {
             for (const auto& it : keys)
@@ -156,13 +158,15 @@ namespace Domodhoro
                 switch (static_cast<int>(it))
                 {
                 case SDL_SCANCODE_W:
-                    for (int step = 1; step <= player_velocity; step++)
+                    for (int step = 1; step <= jump_velocity; step++)
                     {
                         player->move_up();
 
                         if (world->check_collision(player.get()))
                         {
                             player->move_down();
+
+                            break;
                         }
                     }
 
@@ -177,24 +181,12 @@ namespace Domodhoro
                         if (world->check_collision(player.get()))
                         {
                             player->move_right();
+
+                            break;
                         }
                     }
 
                     player->set_source_rect({0, 960, 64, 64});
-                    break;
-
-                case SDL_SCANCODE_S:
-                    for (int step = 1; step <= player_velocity; step++)
-                    {
-                        player->move_down();
-
-                        if (world->check_collision(player.get()))
-                        {
-                            player->move_up();
-                        }
-                    }
-
-                    player->set_source_rect({0, 896, 64, 64});
                     break;
 
                 case SDL_SCANCODE_D:
@@ -205,22 +197,12 @@ namespace Domodhoro
                         if (world->check_collision(player.get()))
                         {
                             player->move_left();
+
+                            break;
                         }
                     }
 
                     player->set_source_rect({0, 896, 64, 64});
-                    break;
-
-                case SDL_SCANCODE_SPACE:
-                    for (int step = 1; step <= jump_velocity; step++)
-                    {
-                        player->jump();
-
-                        if (world->check_collision(player.get()))
-                        {
-                            player->move_down();
-                        }
-                    }
                     break;
                 }
             }
@@ -236,9 +218,14 @@ namespace Domodhoro
                 if (world->check_collision(player.get()))
                 {
                     player->move_up();
+
+                    player_is_floor = true;
+
+                    break;
                 }
             }
 #endif
+            player_is_floor = false;
         }
 
         void handle_player_boundaries()

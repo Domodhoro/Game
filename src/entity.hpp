@@ -42,11 +42,6 @@ namespace Domodhoro
         {
             destination_rect.y += 1;
         }
-
-        void jump()
-        {
-            destination_rect.y -= 1;
-        }
     };
 }
 

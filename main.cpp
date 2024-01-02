@@ -22,7 +22,7 @@ extern "C"
 #include <map>
 #include <unordered_set>
 
-#define GRAVITY false
+#define GRAVITY true
 #define COLLISION true
 #define WORLD_BORDER true
 #define SHOW_TEXTS true
