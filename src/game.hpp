@@ -213,7 +213,7 @@ namespace Domodhoro
 #if GRAVITY
             for (int step = 1; step <= gravity_velocity; step++)
             {
-                player->apply_gravity();
+                player->move_down();
 
                 if (world->check_collision(player.get()))
                 {

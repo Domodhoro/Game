@@ -18,9 +18,9 @@ namespace Domodhoro
             destination_rect.y = position.y;
         }
 
-        void apply_gravity()
+        SDL_Point get_position() const
         {
-            destination_rect.y += 1;
+            return SDL_Point{destination_rect.x , destination_rect.y};
         }
 
         void move_right()
