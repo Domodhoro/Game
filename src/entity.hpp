@@ -10,7 +10,7 @@ namespace Domodhoro
         // Enumeração que define direções possíveis para o movimento da entidade.
         enum class DIRECTION
         {
-            DEFAULT,
+            NONE,
             UP,
             DOWN, 
             LEFT, 
@@ -19,7 +19,8 @@ namespace Domodhoro
 
         // Construtor da classe Entity. Aceita um retângulo de destino.
         Entity(const SDL_Rect& destination_rect) :
-            Game_Object(SDL_Rect{0, 0, 0, 0}, destination_rect)
+            Game_Object(SDL_Rect{0, 0, 0, 0}, destination_rect),
+            is_on_ground(false)
         {
 
         }
@@ -35,6 +36,17 @@ namespace Domodhoro
         SDL_Point get_position() const
         {
             return SDL_Point{destination_rect.x , destination_rect.y};
+        }
+
+        void set_on_ground(const bool on_ground)
+        {
+            is_on_ground = on_ground;
+        }
+
+        // Verifica se a entidade está no chão.
+        bool get_on_ground() const
+        {
+            return is_on_ground;
         }
 
         // Move a entidade na direção especificada.
@@ -66,13 +78,13 @@ namespace Domodhoro
         }
 
         // Inverte a direção fornecida.
-        static DIRECTION reverse_direction(DIRECTION direction)
+        DIRECTION reverse_direction(DIRECTION direction)
         {
             switch (direction)
             {
                 case DIRECTION::UP:
                     return DIRECTION::DOWN;
-                case DIRECTION::DOWN:
+                case DIRECTION::DOWN:                    
                     return DIRECTION::UP;
                 case DIRECTION::LEFT:
                     return DIRECTION::RIGHT;
@@ -83,6 +95,9 @@ namespace Domodhoro
             return DIRECTION::UP;
         }
     protected:
+        // Variável para armazenar se a entidade está no chão.
+        bool is_on_ground;
+
         // Métodos de movimento protegidos para serem usados pelas subclasses.
         void move_right()
         {

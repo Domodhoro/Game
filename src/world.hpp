@@ -24,7 +24,6 @@ namespace Domodhoro
         // Verifica se há colisão entre o jogador e os blocos no mundo.
         bool check_collision(const Entity* player) const
         {
-#if COLLISION
             for (const auto& it : chunks)
             {
                 if (it->check_collision(player))
@@ -32,14 +31,12 @@ namespace Domodhoro
                     return true;
                 }
             }
-#endif // COLLISION
             return false;
         }
 
         // Limita o jogador aos limites do mundo.
         void handle_player_boundaries(Player* player)
         {
-#if WORLD_BORDER
             SDL_Rect player_position = player->get_destination_rect();
 
             static const int world_top = 0;
@@ -56,7 +53,6 @@ namespace Domodhoro
             }
 
             player->set_destination_rect(player_position);
-#endif // WORLD_BORDER
         }
 
         // Renderiza todos os chunks do mundo.

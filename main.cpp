@@ -17,12 +17,6 @@ extern "C"
 #include "./lib/FastNoiseLite/FastNoiseLite.h"
 }
 
-// Definições globais para configuração condicional.
-#define GRAVITY true
-#define COLLISION true
-#define WORLD_BORDER true
-#define SHOW_TEXTS true
-
 // Inclusões de cabeçalhos padrão do C++.
 #include <iostream>
 #include <exception>

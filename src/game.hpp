@@ -98,18 +98,14 @@ namespace Domodhoro
         // Atualiza a lógica do jogo.
         void update()
         {  
-            // Aplica a gravidade.
-            handle_gravity();
             // Movimenta o jogador.
-            move_player(get_ticks());
+            move_player();
             // Impede do jogador sair do mundo.
             world->handle_player_boundaries(player.get());
             // Atualiza a câmera
             update_camera();
-#if SHOW_TEXTS
             // Exibe os textos na tela.
             text->show_player_coordinates(renderer.get(), image.get(), camera->get_position());
-#endif // SHOW_TEXTS
         }
 
         // Renderiza o estado atual do jogo.
@@ -162,46 +158,65 @@ private:
         // Variável que armazena o estado do jogo.
         bool running;
 
-        // Trata a aplicação da gravidade no jogo.
-        void handle_gravity()
-        {
-#if GRAVITY
-            static const int gravity_velocity = 7;
-
-            move_entity_with_collision(player.get(), Entity::DIRECTION::DOWN, gravity_velocity);
-#endif // GRAVITY
-        }
-
         // Move o jogador com base nas teclas pressionadas.
-        void move_player(const Uint32 ticks)
+        void move_player()
         {
+            // Aplica a gravidade no jogador.
+            handle_gravity();
+
             // Velocidade padrão de movimento horizontal do jogador.
-            static const int player_velocity = 2;
+            static const int player_velocity = 3;
             // Velocidade de salto do jogador.
             static const int jump_velocity = 14;
-
+            // Armazena o estado do pulo.
+            static bool player_is_jumping = false;
+            // Contador do pulo.
+            static int jumping_counter = 0;
+    
             // Itera sobre as teclas pressionadas no momento.
-            for (const auto& it : keyboard->get_keys())
+            for (const auto& key : keyboard->get_keys())
             {
-                // Procura a direção correspondente à tecla no mapeamento de teclas.
-                auto DIRECTION = keyboard->get_key_mappings().find(static_cast<int>(it));
+                auto direction = get_direction_from_key(key);
 
-                // Verifica se a tecla corresponde a uma direção válida.
-                if (DIRECTION != keyboard->get_key_mappings().end())
+                // Inicia o pulo se o jogador estiver no chão e se tecla de pulo estiver pressionada.
+                if (player->get_on_ground() && direction == Entity::DIRECTION::UP)
                 {
-                    // Obtém a direção correspondente à tecla.
-                    auto direction = DIRECTION->second;
+                    player_is_jumping = true;
+                }
 
-                    // Define a velocidade com base na direção (velocidade padrão ou velocidade de salto).
-                    int velocity = (direction == Entity::DIRECTION::UP) ? jump_velocity : player_velocity;
+                // Movimenta o jogador.
+                move_entity_with_collision(player.get(), direction, player_velocity);
 
-                    // Move o jogador com detecção de colisão usando a velocidade e direção calculadas.
-                    move_entity_with_collision(player.get(), direction, velocity);
+                // Ativa a animação do jogador na direção especificada e com o tempo atual do jogo.
+                player->animation(direction, get_ticks());
+            }
 
-                    // Ativa a animação do jogador na direção especificada e com o tempo atual do jogo.
-                    player->animation(direction, ticks);
+            // Verifica se o jogador está pulando.
+            if (player_is_jumping)
+            {
+                // Movimenta o jogador para cima.
+                move_entity_with_collision(player.get(), Entity::DIRECTION::UP, jump_velocity);
+
+                // Incrementa o contador do pulo.
+                jumping_counter++;
+
+                // Verifica se o pulo atingiu o limite.
+                if (jumping_counter >= 10)
+                {
+                    // Reseta as variáveis do pulo.
+                    player_is_jumping = false;
+                    jumping_counter = 0;
                 }
             }
+        }
+
+        // Retorna o estado da tecla.
+        Entity::DIRECTION get_direction_from_key(const int key) const
+        {
+            // Procura a direção correspondente à tecla no mapeamento de teclas.
+            const auto it = keyboard->get_key_mappings().find(static_cast<int>(key));
+
+            return (it != keyboard->get_key_mappings().end()) ? it->second : Entity::DIRECTION::NONE;
         }
 
         // Atualiza a posição da câmera com base na posição do jogador.
@@ -218,22 +233,41 @@ private:
             camera->set_position(camera_position);
         }
 
+        // Trata a aplicação da gravidade no jogo.
+        void handle_gravity()
+        {
+            static const int gravity_velocity = 7;
+
+            move_entity_with_collision(player.get(), Entity::DIRECTION::DOWN, gravity_velocity);
+        }
+
         // Move uma entidade com detecção de colisão.
         void move_entity_with_collision(Entity* entity, Entity::DIRECTION direction, const int velocity)
         {
-            // Loop que movimenta a entidade (jogador, por exemplo) em incrementos, controlados pela variável 'velocity'.
+            // Reseta a variável.
+            if (direction == Entity::DIRECTION::DOWN)
+            {
+                entity->set_on_ground(false);
+            }
+
+            // Loop que movimenta a entidade em incrementos.
             for (int step = 1; step <= velocity; step++)
             {
                 // Move a entidade na direção especificada.
                 entity->move(direction);
 
-                // Verifica se há colisão com o mundo (ou outros objetos).
+                // Verifica se há colisão com o mundo.
                 if (world->check_collision(entity))
                 {
+                    // Verifica se há colisão com o chão.
+                    if (direction == Entity::DIRECTION::DOWN)
+                    {
+                        entity->set_on_ground(true);
+                    }
+
                     // Em caso de colisão, reverte o movimento para a posição anterior.
                     entity->move(entity->reverse_direction(direction));
 
-                    // Encerra o loop para evitar movimentos adicionais após a colisão.
                     break;
                 }
             }
