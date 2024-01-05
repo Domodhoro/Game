@@ -1,24 +1,29 @@
 extern "C"
 {
+// Inclusão dos cabeçalhos do SDL.
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
+// Inclusão dos cabeçalhos da Lua.
 #include "./lib/lua54/lua.h"
 #include "./lib/lua54/lualib.h"
 #include "./lib/lua54/lauxlib.h"
 
+// Inclusão do cabeçalho do FastNoiseLite.
 #define FNL_IMPL
 
 #include "./lib/FastNoiseLite/FastNoiseLite.h"
 }
 
+// Definições globais para configuração condicional.
 #define GRAVITY true
 #define COLLISION true
 #define WORLD_BORDER true
 #define SHOW_TEXTS true
 
+// Inclusões de cabeçalhos padrão do C++.
 #include <iostream>
 #include <exception>
 #include <memory>
@@ -27,6 +32,7 @@ extern "C"
 #include <map>
 #include <unordered_set>
 
+// Inclusões de cabeçalhos personalizados.
 #include "./src/game_exception.hpp"
 #include "./src/lua_config.hpp"
 #include "./src/sound_mixer.hpp"
@@ -49,42 +55,54 @@ extern "C"
 
 int main(int argc, char* argv[])
 {
+    // Constante para controlar a taxa de quadros por segundo.
     static const Uint32 FPS = 60;
 
     try
     {
+        // Criação da instância do jogo.
         Domodhoro::Game game("Game", 640, 480);
 
+        // Inicialização do jogo.
         game.init();
 
+        // Variáveis para medir o tempo de execução de cada quadro.
         static Uint32 frame_start = 0;
         static Uint32 frame_end = 0;
 
+        // Loop principal do jogo.
         while (game.is_running())
         {
+            // Marca o início do quadro.
             frame_start = game.get_ticks();
 
+            // Lida com eventos de entrada, atualiza a lógica e renderiza o jogo.
             game.handle_events();
             game.update();
             game.render();
 
+            // Marca o final do quadro.
             frame_end = game.get_ticks();
 
+            // Controla a taxa de quadros por segundo.
             game.set_FPS(FPS, frame_end - frame_start);
         }
     }
     catch (const Domodhoro::Game_Exception& e)
     {
+        // Imprime a mensagem de erro e encerra o programa com código de saída de falha.
         std::cerr << e.what() << std::endl;
 
         return EXIT_FAILURE;
     }
     catch (...)
     {
+        // Imprime uma mensagem de falha desconhecida e encerra o programa com código de saída de falha.
         std::cerr << "Falha desconhecida!" << std::endl;
-
+        
         return EXIT_FAILURE;
     }
 
+    // Se terminar sem problemas, retorna código de saída de sucesso.
     return EXIT_SUCCESS;
 }
