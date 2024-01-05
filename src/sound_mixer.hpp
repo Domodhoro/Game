@@ -1,0 +1,64 @@
+#ifndef SOUND_MIXER_HPP
+#define SOUND_MIXER_HPP
+
+namespace Domodhoro
+{
+    class Sound_Mixer final
+    {
+    public:
+        Sound_Mixer()
+        {
+            if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+            {
+                throw Game_Exception(Mix_GetError(), __FILE__, __LINE__);
+            }
+        }
+
+        ~Sound_Mixer()
+        {
+            for (const auto& it : musics)
+            {
+                Mix_FreeMusic(it.second);
+            }
+
+            Mix_Quit();
+        }
+
+        void load(const std::string& file_path, const std::string& music_name)
+        {
+            musics[music_name] = Mix_LoadMUS(file_path.c_str());
+
+            if (!musics[music_name])
+            {
+                throw Game_Exception(Mix_GetError(), __FILE__, __LINE__);
+            }
+        }
+
+        void play(const std::string& music_name)
+        {
+            if (musics[music_name])
+            {
+                Mix_PlayMusic(musics[music_name], -1);
+            }
+        }
+
+        void pause() const
+        {
+            Mix_PauseMusic();
+        }
+
+        void resume() const
+        {
+            Mix_ResumeMusic();
+        }
+
+        void reset() const
+        {
+            Mix_HaltMusic();
+        }
+    private:
+        std::map<std::string, Mix_Music*> musics;
+    };
+}
+
+#endif

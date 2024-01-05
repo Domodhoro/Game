@@ -41,7 +41,7 @@ namespace Domodhoro
         {
             lua_config = std::make_unique<Lua_Config>("./config.lua");
             renderer = std::make_unique<Renderer>(window, SDL_Rect{0, 0, width, height});
-            sound = std::make_unique<Sound>();
+            sound_mixer = std::make_unique<Sound_Mixer>();
             image = std::make_unique<Image>();
             text = std::make_unique<Text>(renderer.get(), image.get());
             camera = std::make_unique<Camera>(SDL_Point{0, 0});
@@ -92,13 +92,9 @@ namespace Domodhoro
         }
 
         void update()
-        {
-        	static const int player_velocity = 2;
-            static const int jump_velocity = 14;
-        	static const int gravity_velocity = 7;
-  
-            handle_gravity(gravity_velocity);
-            move_player(player_velocity, jump_velocity);
+        {  
+            handle_gravity();
+            move_player();
             handle_player_boundaries();
             update_camera();
 #if SHOW_TEXTS
@@ -142,90 +138,69 @@ namespace Domodhoro
 
         std::unique_ptr<Lua_Config> lua_config;
         std::unique_ptr<Renderer> renderer;
-        std::unique_ptr<Sound> sound;
+        std::unique_ptr<Sound_Mixer> sound_mixer;
         std::unique_ptr<Text> text;
         std::unique_ptr<Image> image;
         std::unique_ptr<Camera> camera;
         std::unique_ptr<Player> player;
         std::unique_ptr<World> world;
 
-        bool player_is_floor = false;
-
-        void move_player(const int player_velocity, const int jump_velocity)
+        std::map<int, Entity::DIRECTION> key_mappings = 
         {
+            {SDL_SCANCODE_SPACE, Entity::DIRECTION::UP},
+            {SDL_SCANCODE_A, Entity::DIRECTION::LEFT},
+            {SDL_SCANCODE_D, Entity::DIRECTION::RIGHT}
+        };
+
+        void move_player()
+        {
+            static const int player_velocity = 2;
+            static const int jump_velocity = 14;
+
             for (const auto& it : keys)
             {
-                switch (static_cast<int>(it))
+                auto DIRECTION_IT = key_mappings.find(static_cast<int>(it));
+
+                if (DIRECTION_IT != key_mappings.end())
                 {
-                case SDL_SCANCODE_W:
-                    for (int step = 1; step <= jump_velocity; step++)
+                    Entity::DIRECTION direction = DIRECTION_IT->second;
+
+                    int velocity = (direction == Entity::DIRECTION::UP) ? jump_velocity : player_velocity;
+
+                    for (int step = 1; step <= velocity; step++)
                     {
-                        player->move_up();
+                        player->move(direction);
 
                         if (world->check_collision(player.get()))
                         {
-                            player->move_down();
+                            player->move(player->reverse_direction(direction));
 
                             break;
                         }
                     }
 
-                    player->set_source_rect({0, 960, 64, 64});
-                    break;
-
-                case SDL_SCANCODE_A:
-                    for (int step = 1; step <= player_velocity; step++)
-                    {
-                        player->move_left();
-
-                        if (world->check_collision(player.get()))
-                        {
-                            player->move_right();
-
-                            break;
-                        }
-                    }
-
-                    player->set_source_rect({0, 960, 64, 64});
-                    break;
-
-                case SDL_SCANCODE_D:
-                    for (int step = 1; step <= player_velocity; step++)
-                    {
-                        player->move_right();
-
-                        if (world->check_collision(player.get()))
-                        {
-                            player->move_left();
-
-                            break;
-                        }
-                    }
-
-                    player->set_source_rect({0, 896, 64, 64});
-                    break;
+                    player->set_animation(direction, get_ticks());
                 }
             }
         }
 
-        void handle_gravity(const int gravity_velocity)
+        void handle_gravity()
         {
 #if GRAVITY
+            static const int gravity_velocity = 7;
+
             for (int step = 1; step <= gravity_velocity; step++)
             {
-                player->move_down();
+                player->move(Entity::DIRECTION::DOWN);
 
                 if (world->check_collision(player.get()))
                 {
-                    player->move_up();
-
-                    player_is_floor = true;
+                    player->move(Entity::DIRECTION::UP);
 
                     break;
                 }
             }
 #endif
-            player_is_floor = false;
         }
 
         void handle_player_boundaries()

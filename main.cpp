@@ -29,7 +29,7 @@ extern "C"
 
 #include "./src/game_exception.hpp"
 #include "./src/lua_config.hpp"
-#include "./src/sound.hpp"
+#include "./src/sound_mixer.hpp"
 #include "./src/font.hpp"
 #include "./src/image.hpp"
 #include "./src/camera.hpp"
