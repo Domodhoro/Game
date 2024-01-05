@@ -1,6 +1,5 @@
-#!/bin/bash
-
 source_file="main.cpp"
+
 executable="Game"
 
 if ! command -v g++ &> /dev/null; then

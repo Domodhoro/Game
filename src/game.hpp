@@ -81,8 +81,8 @@ namespace Domodhoro
         void update()
         {  
             handle_gravity();
-            move_player();
-            handle_player_boundaries();
+            move_player(get_ticks());
+            world->handle_player_boundaries(player.get());
             update_camera();
 #if SHOW_TEXTS
             text->show_player_coordinates(renderer.get(), image.get(), camera->get_position());
@@ -111,7 +111,7 @@ namespace Domodhoro
                 SDL_Delay(delay - frame_time);
             }
         }
-    private:
+private:
         int width;
         int height;
 
@@ -139,7 +139,7 @@ namespace Domodhoro
 #endif
         }
 
-        void move_player()
+        void move_player(const Uint32 ticks)
         {
             static const int player_velocity = 2;
             static const int jump_velocity = 14;
@@ -156,29 +156,9 @@ namespace Domodhoro
 
                     move_entity_with_collision(player.get(), direction, velocity);
                 
-                    player->animation(direction, get_ticks());
+                    player->animation(direction, ticks);
                 }
             }
-        }
-
-        void handle_player_boundaries()
-        {
-#if WORLD_BORDER
-            SDL_Rect player_position = player->get_destination_rect();
-
-            static const int world_bottom = (static_cast<int>(Chunk::HEIGHT) * static_cast<int>(Block::HEIGHT)) - player_position.h;
-
-            if (player_position.y < 0)
-            {
-                player_position.y = 0;
-            }
-            else if (player_position.y > world_bottom)
-            {
-                player_position.y = world_bottom;
-            }
-
-            player->set_destination_rect(player_position);
-#endif
         }
 
         void update_camera()

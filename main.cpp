@@ -11,21 +11,21 @@ extern "C"
 
 #define FNL_IMPL
 
-#include "lib/FastNoiseLite/FastNoiseLite.h"
+#include "./lib/FastNoiseLite/FastNoiseLite.h"
 }
-
-#include <iostream>
-#include <exception>
-#include <cstring>
-#include <memory>
-#include <vector>
-#include <map>
-#include <unordered_set>
 
 #define GRAVITY true
 #define COLLISION true
 #define WORLD_BORDER true
 #define SHOW_TEXTS true
+
+#include <iostream>
+#include <exception>
+#include <memory>
+#include <cstring>
+#include <vector>
+#include <map>
+#include <unordered_set>
 
 #include "./src/game_exception.hpp"
 #include "./src/lua_config.hpp"
