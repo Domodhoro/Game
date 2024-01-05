@@ -41,6 +41,8 @@ namespace Domodhoro
         {
             lua_config = std::make_unique<Lua_Config>("./config.lua");
             renderer = std::make_unique<Renderer>(window, SDL_Rect{0, 0, width, height});
+            keyboard = std::make_unique<Keyboard>();
+            mouse = std::make_unique<Mouse>();
             sound_mixer = std::make_unique<Sound_Mixer>();
             image = std::make_unique<Image>();
             text = std::make_unique<Text>(renderer.get(), image.get());
@@ -72,23 +74,8 @@ namespace Domodhoro
 
         void handle_events()
         {
-            while (SDL_PollEvent(&event) != 0)
-            {
-                switch (event.type)
-                {
-                case SDL_QUIT:
-                    running = false;
-                    break;
-
-                case SDL_KEYDOWN:
-                    keys.insert(event.key.keysym.scancode);
-                    break;
-
-                case SDL_KEYUP:
-                    keys.erase(event.key.keysym.scancode);
-                    break;
-                }
-            }
+            keyboard->update(running);
+            mouse->update();
         }
 
         void update()
@@ -130,19 +117,10 @@ namespace Domodhoro
 
         SDL_Window* window;
 
-        SDL_Event event;
-
-        std::unordered_set<SDL_Scancode> keys;
-
-        std::map<int, Entity::DIRECTION> key_mappings = 
-        {
-            {SDL_SCANCODE_SPACE, Entity::DIRECTION::UP},
-            {SDL_SCANCODE_A, Entity::DIRECTION::LEFT},
-            {SDL_SCANCODE_D, Entity::DIRECTION::RIGHT}
-        };
-
         std::unique_ptr<Lua_Config> lua_config;
         std::unique_ptr<Renderer> renderer;
+        std::unique_ptr<Keyboard> keyboard;
+        std::unique_ptr<Mouse> mouse;
         std::unique_ptr<Sound_Mixer> sound_mixer;
         std::unique_ptr<Text> text;
         std::unique_ptr<Image> image;
@@ -166,11 +144,11 @@ namespace Domodhoro
             static const int player_velocity = 2;
             static const int jump_velocity = 14;
 
-            for (const auto& it : keys)
+            for (const auto& it : keyboard->get_keys())
             {
-                auto DIRECTION = key_mappings.find(static_cast<int>(it));
+                auto DIRECTION = keyboard->get_key_mappings().find(static_cast<int>(it));
 
-                if (DIRECTION != key_mappings.end())
+                if (DIRECTION != keyboard->get_key_mappings().end())
                 {
                     auto direction = DIRECTION->second;
 
@@ -178,7 +156,7 @@ namespace Domodhoro
 
                     move_entity_with_collision(player.get(), direction, velocity);
                 
-                    player->set_animation(direction, get_ticks());
+                    player->animation(direction, get_ticks());
                 }
             }
         }

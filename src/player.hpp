@@ -12,7 +12,7 @@ namespace Domodhoro
 
 		}
 
-		void set_animation(DIRECTION direction, const Uint32 ticks)
+		void animation(DIRECTION direction, const Uint32 ticks)
         {
         	static const int frame_duration = 50;
     		static const int num_frames = 14;
