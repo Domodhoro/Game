@@ -134,7 +134,12 @@ namespace Domodhoro
 
         std::unordered_set<SDL_Scancode> keys;
 
-        bool running;
+        std::map<int, Entity::DIRECTION> key_mappings = 
+        {
+            {SDL_SCANCODE_SPACE, Entity::DIRECTION::UP},
+            {SDL_SCANCODE_A, Entity::DIRECTION::LEFT},
+            {SDL_SCANCODE_D, Entity::DIRECTION::RIGHT}
+        };
 
         std::unique_ptr<Lua_Config> lua_config;
         std::unique_ptr<Renderer> renderer;
@@ -145,12 +150,16 @@ namespace Domodhoro
         std::unique_ptr<Player> player;
         std::unique_ptr<World> world;
 
-        std::map<int, Entity::DIRECTION> key_mappings = 
+        bool running;
+
+        void handle_gravity()
         {
-            {SDL_SCANCODE_SPACE, Entity::DIRECTION::UP},
-            {SDL_SCANCODE_A, Entity::DIRECTION::LEFT},
-            {SDL_SCANCODE_D, Entity::DIRECTION::RIGHT}
-        };
+#if GRAVITY
+            static const int gravity_velocity = 7;
+
+            move_entity_with_collision(player.get(), Entity::DIRECTION::DOWN, gravity_velocity);
+#endif
+        }
 
         void move_player()
         {
@@ -159,48 +168,19 @@ namespace Domodhoro
 
             for (const auto& it : keys)
             {
-                auto DIRECTION_IT = key_mappings.find(static_cast<int>(it));
+                auto DIRECTION = key_mappings.find(static_cast<int>(it));
 
-                if (DIRECTION_IT != key_mappings.end())
+                if (DIRECTION != key_mappings.end())
                 {
-                    Entity::DIRECTION direction = DIRECTION_IT->second;
+                    auto direction = DIRECTION->second;
 
                     int velocity = (direction == Entity::DIRECTION::UP) ? jump_velocity : player_velocity;
 
-                    for (int step = 1; step <= velocity; step++)
-                    {
-                        player->move(direction);
-
-                        if (world->check_collision(player.get()))
-                        {
-                            player->move(player->reverse_direction(direction));
-
-                            break;
-                        }
-                    }
-
+                    move_entity_with_collision(player.get(), direction, velocity);
+                
                     player->set_animation(direction, get_ticks());
                 }
             }
-        }
-
-        void handle_gravity()
-        {
-#if GRAVITY
-            static const int gravity_velocity = 7;
-
-            for (int step = 1; step <= gravity_velocity; step++)
-            {
-                player->move(Entity::DIRECTION::DOWN);
-
-                if (world->check_collision(player.get()))
-                {
-                    player->move(Entity::DIRECTION::UP);
-
-                    break;
-                }
-            }
-#endif
         }
 
         void handle_player_boundaries()
@@ -232,6 +212,21 @@ namespace Domodhoro
             };
 
             camera->set_position(camera_position);
+        }
+
+        void move_entity_with_collision(Entity* entity, Entity::DIRECTION direction, const int velocity)
+        {
+            for (int step = 1; step <= velocity; step++)
+            {
+                entity->move(direction);
+
+                if (world->check_collision(entity))
+                {
+                    entity->move(entity->reverse_direction(direction));
+
+                    break;
+                }
+            }
         }
     };
 }

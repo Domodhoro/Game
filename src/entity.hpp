@@ -8,6 +8,7 @@ namespace Domodhoro
     public:
         enum class DIRECTION
         {
+            DEFAULT,
             UP,
             DOWN, 
             LEFT, 
