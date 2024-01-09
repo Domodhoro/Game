@@ -123,6 +123,7 @@ namespace Domodhoro
             // Renderiza o texto.
             text->render(renderer.get(), image.get());
             
+            // Atualiza a tela com as alterações realizadas nos métodos de renderização presente.
             renderer->present();
         }
 
@@ -141,6 +142,7 @@ private:
         int width;
         int height;
 
+        // Armazana a janela de visualização do jogo.
         SDL_Window* window;
 
         // Componentes do jogo.
@@ -166,57 +168,32 @@ private:
 
             // Velocidade padrão de movimento horizontal do jogador.
             static const int player_velocity = 3;
-            // Velocidade de salto do jogador.
-            static const int jump_velocity = 14;
             // Armazena o estado do pulo.
             static bool player_is_jumping = false;
-            // Contador do pulo.
-            static int jumping_counter = 0;
+
+            // Lógica do pulo do jogador.
+            jump(player_is_jumping);
     
             // Itera sobre as teclas pressionadas no momento.
             for (const auto& key : keyboard->get_keys())
             {
-                auto direction = get_direction_from_key(key);
+                auto direction = keyboard->get_direction_from_key(key);
 
                 // Inicia o pulo se o jogador estiver no chão e se tecla de pulo estiver pressionada.
-                if (player->get_on_ground() && direction == Entity::DIRECTION::UP)
+                if (player->is_on_ground() && direction == Entity::DIRECTION::UP)
                 {
                     player_is_jumping = true;
                 }
 
-                // Movimenta o jogador.
-                move_entity_with_collision(player.get(), direction, player_velocity);
+                // Movimenta o jogador na horizontal.
+                if (direction != Entity::DIRECTION::UP)
+                {
+                    move_entity_with_collision(player.get(), direction, player_velocity);
+                }
 
                 // Ativa a animação do jogador na direção especificada e com o tempo atual do jogo.
                 player->animation(direction, get_ticks());
             }
-
-            // Verifica se o jogador está pulando.
-            if (player_is_jumping)
-            {
-                // Movimenta o jogador para cima.
-                move_entity_with_collision(player.get(), Entity::DIRECTION::UP, jump_velocity);
-
-                // Incrementa o contador do pulo.
-                jumping_counter++;
-
-                // Verifica se o pulo atingiu o limite.
-                if (jumping_counter >= 10)
-                {
-                    // Reseta as variáveis do pulo.
-                    player_is_jumping = false;
-                    jumping_counter = 0;
-                }
-            }
-        }
-
-        // Retorna o estado da tecla.
-        Entity::DIRECTION get_direction_from_key(const int key) const
-        {
-            // Procura a direção correspondente à tecla no mapeamento de teclas.
-            const auto it = keyboard->get_key_mappings().find(static_cast<int>(key));
-
-            return (it != keyboard->get_key_mappings().end()) ? it->second : Entity::DIRECTION::NONE;
         }
 
         // Atualiza a posição da câmera com base na posição do jogador.
@@ -244,12 +221,6 @@ private:
         // Move uma entidade com detecção de colisão.
         void move_entity_with_collision(Entity* entity, Entity::DIRECTION direction, const int velocity)
         {
-            // Reseta a variável.
-            if (direction == Entity::DIRECTION::DOWN)
-            {
-                entity->set_on_ground(false);
-            }
-
             // Loop que movimenta a entidade em incrementos.
             for (int step = 1; step <= velocity; step++)
             {
@@ -262,13 +233,45 @@ private:
                     // Verifica se há colisão com o chão.
                     if (direction == Entity::DIRECTION::DOWN)
                     {
-                        entity->set_on_ground(true);
+                        entity->set_on_ground_status(true);
                     }
 
                     // Em caso de colisão, reverte o movimento para a posição anterior.
                     entity->move(entity->reverse_direction(direction));
 
                     break;
+                }
+            }
+        }
+
+        // Lógica do pulo do jogador.
+        void jump(bool& player_is_jumping)
+        {
+            // Velocidade de salto do jogador.
+            static const int jump_velocity = 14;
+            // Contador do pulo.
+            static int jump_counter = 0;
+            // Limite do contador de pulo.
+            static int jump_counter_limit = 10;
+
+            // Verifica se o jogador está pulando.
+            if (player_is_jumping)
+            {
+                // Reseta a variável.
+                player->set_on_ground_status(false);
+
+                // Movimenta o jogador para cima.
+                move_entity_with_collision(player.get(), Entity::DIRECTION::UP, jump_velocity);
+
+                // Incrementa o contador do pulo.
+                jump_counter++;
+
+                // Verifica se o pulo atingiu o limite.
+                if (jump_counter >= jump_counter_limit)
+                {
+                    // Reseta as variáveis do pulo.
+                    player_is_jumping = false;
+                    jump_counter = 0;
                 }
             }
         }

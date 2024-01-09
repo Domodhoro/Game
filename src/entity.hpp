@@ -13,14 +13,14 @@ namespace Domodhoro
             NONE,
             UP,
             DOWN, 
-            LEFT, 
+            LEFT,
             RIGHT
         };
 
         // Construtor da classe Entity. Aceita um retângulo de destino.
         Entity(const SDL_Rect& destination_rect) :
             Game_Object(SDL_Rect{0, 0, 0, 0}, destination_rect),
-            is_on_ground(false)
+            on_ground(false)
         {
 
         }
@@ -38,15 +38,16 @@ namespace Domodhoro
             return SDL_Point{destination_rect.x , destination_rect.y};
         }
 
-        void set_on_ground(const bool on_ground)
+        // Define o estado da entidade em relação ao contato com o chão.
+        void set_on_ground_status(const bool on_ground)
         {
-            is_on_ground = on_ground;
+            this->on_ground = on_ground;
         }
 
         // Verifica se a entidade está no chão.
-        bool get_on_ground() const
+        bool is_on_ground() const
         {
-            return is_on_ground;
+            return on_ground;
         }
 
         // Move a entidade na direção especificada.
@@ -96,7 +97,7 @@ namespace Domodhoro
         }
     protected:
         // Variável para armazenar se a entidade está no chão.
-        bool is_on_ground;
+        bool on_ground;
 
         // Métodos de movimento protegidos para serem usados pelas subclasses.
         void move_right()

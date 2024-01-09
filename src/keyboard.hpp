@@ -10,7 +10,7 @@ namespace Domodhoro
         // Atualiza o estado do teclado e manipula eventos relevantes.
        	void update(bool& running)
     	{
-    		while (SDL_PollEvent(&event) != 0)
+    		while (SDL_PollEvent(&event))
             {
                 switch (event.type)
                 {
@@ -35,20 +35,23 @@ namespace Domodhoro
             }
     	}
 
+        // Retorna o estado da tecla.
+        Entity::DIRECTION get_direction_from_key(const int key) const
+        {
+            // Procura a direção correspondente à tecla no mapeamento de teclas.
+            const auto it = key_mappings.find(static_cast<int>(key));
+
+            return (it != key_mappings.end()) ? it->second : Entity::DIRECTION::NONE;
+        }
+
         // Obtém o conjunto de teclas atualmente pressionadas.
     	const std::unordered_set<SDL_Scancode>& get_keys() const
     	{
     		return keys;
     	}
-
-        // Obtém o mapeamento entre códigos de tecla e direções associadas.
-    	const std::map<int, Entity::DIRECTION>& get_key_mappings() const
-    	{
-    		return key_mappings;
-    	}
     private:
-        // Estrutura de evento SDL para capturar eventos de teclado.
-    	SDL_Event event;
+        // Estrutura de evento SDL para capturar eventos.
+        SDL_Event event;
 
         // Conjunto de teclas atualmente pressionadas.
     	std::unordered_set<SDL_Scancode> keys;
