@@ -48,9 +48,12 @@ namespace Domodhoro
         }
 
         // Inicializa diversos componentes do jogo.
-        void init()
+        void init(const std::string& file_path)
         {
-            lua_config = std::make_unique<Lua_Config>("./config.lua");
+            // Semente do mundo.
+            const int world_seed = 1007;
+
+            lua_config = std::make_unique<Lua_Config>(file_path);
             renderer = std::make_unique<Renderer>(window, SDL_Rect{0, 0, width, height});
             keyboard = std::make_unique<Keyboard>();
             mouse = std::make_unique<Mouse>();
@@ -58,9 +61,14 @@ namespace Domodhoro
             image = std::make_unique<Image>();
             text = std::make_unique<Text>(renderer.get(), image.get());
             camera = std::make_unique<Camera>(SDL_Point{0, 0});
-            player = std::make_unique<Player>(SDL_Rect{width / 2 - 50 / 2, height / 2 - 50 / 2, 50, 50});
-            world = std::make_unique<World>(1007);
+            player = std::make_unique<Player>(SDL_Rect{width / 2 - Player::WIDTH / 2, height / 2 - Player::HEIGHT / 2, Player::WIDTH, Player::HEIGHT});
+            world = std::make_unique<World>(world_seed);
+            game_logic = std::make_unique<Game_Logic>(camera.get(), world.get(), player.get());
+        }
 
+        // Carrega todos os recursos (imagens, sons, arquivo de fonte de texto, etc...) do jogo.
+        void load()
+        {
             // Carrega os sprites do objetos do jogo.
             SDL_Surface* player_surface = image->create_surface("./img/player.png");
             SDL_Surface* block_surface = image->create_surface("./img/block.png");
@@ -97,15 +105,13 @@ namespace Domodhoro
 
         // Atualiza a lógica do jogo.
         void update()
-        {  
+        {
+            // Aplica a gravidade no jogador.
+            game_logic->handle_gravity(7);
             // Movimenta o jogador.
-            move_player();
-            // Impede do jogador sair do mundo.
-            world->handle_player_boundaries(player.get());
+            game_logic->move_player(3, keyboard.get(), get_ticks());
             // Atualiza a câmera
-            update_camera();
-            // Exibe os textos na tela.
-            text->show_player_coordinates(renderer.get(), image.get(), camera->get_position());
+            game_logic->update_camera(width, height);
         }
 
         // Renderiza o estado atual do jogo.
@@ -120,8 +126,8 @@ namespace Domodhoro
             // Renderiza o jogador.
             renderer->render(image->get("PLAYER"), camera->get_position(), player->get_source_rect(), player->get_destination_rect());
 
-            // Renderiza o texto.
-            text->render(renderer.get(), image.get());
+            // Exibe as coordenadas do jogador na tela.
+            text->render_player_coordinates(renderer.get(), image.get(), camera->get_position());
             
             // Atualiza a tela com as alterações realizadas nos métodos de renderização presente.
             renderer->present();
@@ -156,125 +162,10 @@ private:
         std::unique_ptr<Camera> camera;
         std::unique_ptr<Player> player;
         std::unique_ptr<World> world;
+        std::unique_ptr<Game_Logic> game_logic;
 
         // Variável que armazena o estado do jogo.
         bool running;
-
-        // Move o jogador com base nas teclas pressionadas.
-        void move_player()
-        {
-            // Aplica a gravidade no jogador.
-            handle_gravity();
-
-            // Velocidade padrão de movimento horizontal do jogador.
-            static const int player_velocity = 3;
-            // Armazena o estado do pulo.
-            static bool player_is_jumping = false;
-
-            // Lógica do pulo do jogador.
-            jump(player_is_jumping);
-    
-            // Itera sobre as teclas pressionadas no momento.
-            for (const auto& key : keyboard->get_keys())
-            {
-                auto direction = keyboard->get_direction_from_key(key);
-
-                // Inicia o pulo se o jogador estiver no chão e se tecla de pulo estiver pressionada.
-                if (player->is_on_ground() && direction == Entity::DIRECTION::UP)
-                {
-                    player_is_jumping = true;
-                }
-
-                // Movimenta o jogador na horizontal.
-                if (direction != Entity::DIRECTION::UP)
-                {
-                    move_entity_with_collision(player.get(), direction, player_velocity);
-                }
-
-                // Ativa a animação do jogador na direção especificada e com o tempo atual do jogo.
-                player->animation(direction, get_ticks());
-            }
-        }
-
-        // Atualiza a posição da câmera com base na posição do jogador.
-        void update_camera()
-        {
-            // Calcula a posição central da câmera com base na posição central do jogador.
-            const SDL_Point camera_position =
-            {
-                player->get_destination_rect().x + player->get_destination_rect().w / 2 - width / 2,
-                player->get_destination_rect().y + player->get_destination_rect().h / 2 - height / 2
-            };
-
-            // Define a posição da câmera usando a posição calculada.
-            camera->set_position(camera_position);
-        }
-
-        // Trata a aplicação da gravidade no jogo.
-        void handle_gravity()
-        {
-            static const int gravity_velocity = 7;
-
-            move_entity_with_collision(player.get(), Entity::DIRECTION::DOWN, gravity_velocity);
-        }
-
-        // Move uma entidade com detecção de colisão.
-        void move_entity_with_collision(Entity* entity, Entity::DIRECTION direction, const int velocity)
-        {
-            // Loop que movimenta a entidade em incrementos.
-            for (int step = 1; step <= velocity; step++)
-            {
-                // Move a entidade na direção especificada.
-                entity->move(direction);
-
-                // Verifica se há colisão com o mundo.
-                if (world->check_collision(entity))
-                {
-                    // Verifica se há colisão com o chão.
-                    if (direction == Entity::DIRECTION::DOWN)
-                    {
-                        entity->set_on_ground_status(true);
-                    }
-
-                    // Em caso de colisão, reverte o movimento para a posição anterior.
-                    entity->move(entity->reverse_direction(direction));
-
-                    break;
-                }
-            }
-        }
-
-        // Lógica do pulo do jogador.
-        void jump(bool& player_is_jumping)
-        {
-            // Velocidade de salto do jogador.
-            static const int jump_velocity = 14;
-            // Contador do pulo.
-            static int jump_counter = 0;
-            // Limite do contador de pulo.
-            static int jump_counter_limit = 10;
-
-            // Verifica se o jogador está pulando.
-            if (player_is_jumping)
-            {
-                // Reseta a variável.
-                player->set_on_ground_status(false);
-
-                // Movimenta o jogador para cima.
-                move_entity_with_collision(player.get(), Entity::DIRECTION::UP, jump_velocity);
-
-                // Incrementa o contador do pulo.
-                jump_counter++;
-
-                // Verifica se o pulo atingiu o limite.
-                if (jump_counter >= jump_counter_limit)
-                {
-                    // Reseta as variáveis do pulo.
-                    player_is_jumping = false;
-                    jump_counter = 0;
-                }
-            }
-        }
     };
 }
 

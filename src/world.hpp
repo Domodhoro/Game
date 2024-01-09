@@ -22,15 +22,16 @@ namespace Domodhoro
         }
 
         // Verifica se há colisão entre o jogador e os blocos no mundo.
-        bool check_collision(const Entity* player) const
+        bool check_collision(const Entity* entity) const
         {
             for (const auto& it : chunks)
             {
-                if (it->check_collision(player))
+                if (it->check_collision(entity))
                 {
                     return true;
                 }
             }
+
             return false;
         }
 

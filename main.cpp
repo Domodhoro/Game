@@ -1,23 +1,23 @@
 extern "C"
 {
-// Inclusão dos cabeçalhos do SDL.
+// Inclusão dos cabeçalhos SDL.
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
-// Inclusão dos cabeçalhos da Lua.
+// Inclusão dos cabeçalhos Lua.
 #include "./lib/lua54/lua.h"
 #include "./lib/lua54/lualib.h"
 #include "./lib/lua54/lauxlib.h"
 
-// Inclusão do cabeçalho do FastNoiseLite.
+// Inclusão do cabeçalho FastNoiseLite.
 #define FNL_IMPL
 
 #include "./lib/FastNoiseLite/FastNoiseLite.h"
 }
 
-// Inclusões de cabeçalhos padrão do C++.
+// Inclusões de cabeçalhos padrão C++.
 #include <iostream>
 #include <exception>
 #include <memory>
@@ -45,24 +45,28 @@ extern "C"
 #include "./src/quadtree.hpp"
 #include "./src/chunk.hpp"
 #include "./src/world.hpp"
+#include "./src/game_logic.hpp"
 #include "./src/game.hpp"
 
 int main(int argc, char* argv[])
 {
     // Constante para controlar a taxa de quadros por segundo.
-    static const Uint32 FPS = 60;
+    const Uint32 FPS = 60;
 
     try
     {
         // Criação da instância do jogo.
         Domodhoro::Game game("Game", 640, 480);
 
-        // Inicialização do jogo.
-        game.init();
+        // Inicializa diversos componentes do jogo.
+        game.init("./config.lua");
+
+        // Carrega todos os recursos (imagens, sons, arquivo de fonte de texto, etc...) do jogo.
+        game.load();
 
         // Variáveis para medir o tempo de execução de cada quadro.
-        static Uint32 frame_start = 0;
-        static Uint32 frame_end = 0;
+        Uint32 frame_start = 0;
+        Uint32 frame_end = 0;
 
         // Loop principal do jogo.
         while (game.is_running())

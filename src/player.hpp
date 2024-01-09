@@ -7,9 +7,14 @@ namespace Domodhoro
 	class Player final : public Entity
 	{
 	public:
+        static const int WIDTH = 50;
+        static const int HEIGHT = 50;
+
         // Construtor que inicializa o jogador com a posição especificada.
 		Player(const SDL_Rect& destination_rect) :
-			Entity(destination_rect)
+			Entity(destination_rect),
+            frame_duration(1),
+            num_frames(1)
 		{
 
 		}
@@ -18,8 +23,8 @@ namespace Domodhoro
 		void animation(DIRECTION direction, const Uint32 ticks)
         {
             // Configurações para animação.
-        	static const int frame_duration = 50;
-    		static const int num_frames = 14;
+        	frame_duration = 50;
+    		num_frames = 14;
 
             // Calcula o índice do quadro com base nos ticks.
     		const int frame_index = 2 + (ticks / frame_duration) % num_frames;
@@ -41,6 +46,10 @@ namespace Domodhoro
                     break;
             }
         }
+    private:
+        // Configurações para animação.
+        int frame_duration;
+        int num_frames;
 	};
 }
 
