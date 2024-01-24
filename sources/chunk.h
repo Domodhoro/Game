@@ -38,23 +38,43 @@ Chunk *create_chunk(int x, int y) {
 	return new_chunk;
 }
 
+// Função para verificar se já existe um chunk na posição especificada
+_Bool chunk_exists(World *world, int x, int y) {
+    Chunk *current_chunk = world->first_chunk;
+
+    while (current_chunk != NULL) {
+        if (current_chunk->x == x && current_chunk->y == y) {
+            // Já existe um chunk nesta posição
+            return true;
+        }
+
+        current_chunk = current_chunk->next_chunk;
+    }
+
+    // Não existe um chunk nesta posição
+    return false;
+}
+
 // Função para adicionar um chunk à lista encadeada de chunks.
 void add_chunk(World *world, const int x, const int y) {
-    Chunk *new_chunk = create_chunk(x, y);
+    // Verifica se o chunk do jogador não existe no mundo.
+    if (!chunk_exists(world, x, y)) {
+        Chunk *new_chunk = create_chunk(x, y);
 
-    // Verifica se esta é a primeira adição de um chunk ao mundo.
-    if (world->first_chunk == NULL) {
-    	// Se for o primeiro chunk, define-o como o primeiro chunk na lista.
-        world->first_chunk = new_chunk;
-    } 
-    else {
-    	// Se não for o primeiro chunk, encontra o último chunk na lista.
-        Chunk *current_chunk = world->first_chunk;
+        // Verifica se esta é a primeira adição de um chunk ao mundo.
+        if (world->first_chunk == NULL) {
+            // Se for o primeiro chunk, define-o como o primeiro chunk na lista.
+            world->first_chunk = new_chunk;
+        } 
+        else {
+            // Se não for o primeiro chunk, encontra o último chunk na lista.
+            Chunk *current_chunk = world->first_chunk;
 
-        while (current_chunk->next_chunk != NULL) current_chunk = current_chunk->next_chunk;
+            while (current_chunk->next_chunk != NULL) current_chunk = current_chunk->next_chunk;
 
-        // Adiciona o novo chunk ao final da lista.
-        current_chunk->next_chunk = new_chunk;
+            // Adiciona o novo chunk ao final da lista.
+            current_chunk->next_chunk = new_chunk;
+        }   
     }
 }
 
@@ -88,23 +108,6 @@ void remove_chunk(World *world, const int x, const int y) {
         // Libera a memória alocada para o chunk removido.
         free(current_chunk);
     }
-}
-
-// Função para verificar se já existe um chunk na posição especificada
-_Bool chunk_exists(World *world, int x, int y) {
-    Chunk *current_chunk = world->first_chunk;
-
-    while (current_chunk != NULL) {
-        if (current_chunk->x == x && current_chunk->y == y) {
-            // Já existe um chunk nesta posição
-            return true;
-        }
-
-        current_chunk = current_chunk->next_chunk;
-    }
-
-    // Não existe um chunk nesta posição
-    return false;
 }
 
 #endif //  CHUNK_H

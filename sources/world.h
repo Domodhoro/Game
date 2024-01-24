@@ -38,11 +38,8 @@ void update_world(Game *game) {
         player_chunk_x = (player_chunk_x + 1) / CHUNK_WIDTH - 1;
     }
 
-    // Verifica se o chunk do jogador não existe no mundo.
-    if (!chunk_exists(&game->world, player_chunk_x * CHUNK_WIDTH * BLOCK_SIZE, 500)) {
-    	// Adiciona um novo chunk ao mundo na posição do jogador.
-    	add_chunk(&game->world, player_chunk_x * CHUNK_WIDTH * BLOCK_SIZE, 500);
-    }
+    // Adiciona o chunk ao mundo.
+    add_chunk(&game->world, player_chunk_x * CHUNK_WIDTH * BLOCK_SIZE, 500);
 }
 
 #endif // WORLD_H
