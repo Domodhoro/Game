@@ -44,6 +44,7 @@
 #include "./sources/enums.h"
 #include "./sources/structs.h"
 #include "./sources/colors.h"
+#include "./sources/chunk.h"
 #include "./sources/world.h"
 #include "./sources/player.h"
 #include "./sources/texture.h"

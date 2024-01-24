@@ -26,6 +26,8 @@ void camera_update(Game *game) {
 
 // Atualiza o estado do jogo, movendo o jogador com base nas teclas pressionadas e em colisões.
 void update(Game *game) {
+	update_world(game);
+
 	// Atualiza a posição do jogador.
 	player_update(game);
 
