@@ -62,8 +62,10 @@ void init(Game *game) {
     game->text.dst.x = 16;
 	game->text.dst.y = 50;
 
-	// Carrega texturas iniciais a partir dos arquivos de imagem.
+	// Cria texturas a partir de textos.
 	game->texture_atlas.text = get_text_texture(game->renderer, game->font, &game->text);
+
+	// Cria texturas a partir dos arquivos de imagem.
 	game->texture_atlas.player = get_texture(game->renderer, "./textures/player.png");
 	game->texture_atlas.blocks = get_texture(game->renderer, "./textures/blocks.png");
 	game->texture_atlas.heart = get_texture(game->renderer, "./textures/heart.png");

@@ -3,9 +3,6 @@
 
 // Libera os recursos alocados durante a execução do jogo.
 void terminate(Game *game) {
-	// Libera a memória alocada para o chunk.
-	if (game->world.chunk == NULL) free(game->world.chunk);
-
 	// Libera as texturas do atlas de texturas.
 	if (game->texture_atlas.text != NULL) SDL_DestroyTexture(game->texture_atlas.text);
 	if (game->texture_atlas.player != NULL) SDL_DestroyTexture(game->texture_atlas.player);

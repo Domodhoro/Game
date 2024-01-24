@@ -28,7 +28,7 @@ Chunk;
 
 // Struct para representar o mundo.
 typedef struct World {
-	Chunk *chunk;
+	Chunk chunks[CHUNK_MAX];
 
 	int seed;
 }
