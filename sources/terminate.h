@@ -3,6 +3,9 @@
 
 // Libera os recursos alocados durante a execução do jogo.
 void terminate(Game *game) {
+	// Função para liberar a memória associada ao mundo.
+	destroy_world(&game->world);
+
 	// Libera as texturas do atlas de texturas.
 	if (game->texture_atlas.text != NULL) SDL_DestroyTexture(game->texture_atlas.text);
 	if (game->texture_atlas.player != NULL) SDL_DestroyTexture(game->texture_atlas.player);

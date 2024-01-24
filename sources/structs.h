@@ -23,12 +23,17 @@ Block;
 // Struct para representar um pedaço gerenciável do mundo.
 typedef struct Chunk {
 	Block blocks[CHUNK_WIDTH][CHUNK_HEIGHT];
+
+	struct Chunk *next_chunk;
+
+	int x;
+	int y;
 }
 Chunk;
 
 // Struct para representar o mundo.
 typedef struct World {
-	Chunk chunks[CHUNK_MAX];
+	Chunk *first_chunk;
 
 	int seed;
 }

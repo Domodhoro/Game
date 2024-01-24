@@ -56,16 +56,20 @@ DIRECTION reverse_direction(DIRECTION direction) {
 void move_entity_with_collision(Game *game, DIRECTION direction) {
 	move_player(game, direction);
 
-	// Loop para mover o jogador verificando a colisão.
-	int i, j, k;
+	Chunk *current_chunk = game->world.first_chunk;
 
-	for (i = 0; i != CHUNK_MAX; i++) {
-		for (j = 0; j != CHUNK_WIDTH; j++) {
-			for (k = 0; k != CHUNK_HEIGHT; k++) {
-				if (SDL_HasIntersection(&game->player.dst, &game->world.chunks[i].blocks[j][k].dst)) move_player(game, reverse_direction(direction));
+	while (current_chunk != NULL) {
+        // Loop para mover o jogador verificando a colisão.
+		int i, j;
+
+		for (i = 0; i != CHUNK_WIDTH; i++) {
+			for (j = 0; j != CHUNK_HEIGHT; j++) {
+				if (SDL_HasIntersection(&game->player.dst, &current_chunk->blocks[i][j].dst)) move_player(game, reverse_direction(direction));
 			}
 		}
-	}
+
+        current_chunk = current_chunk->next_chunk;
+    }
 }
 
 #endif // PLAYER_H

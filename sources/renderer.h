@@ -24,22 +24,26 @@ void render_text(Game *game) {
 
 // Renderiza o mundo.
 void render_world(Game *game) {
-	int i, j, k;
+    Chunk *current_chunk = game->world.first_chunk;
 
-	for (i = 0; i != CHUNK_MAX; i++) {
-		for (j = 0; j != CHUNK_WIDTH; j++) {
-			for (k = 0; k != CHUNK_HEIGHT; k++) {
+    while (current_chunk != NULL) {
+        int i, j;
+
+		for (i = 0; i != CHUNK_WIDTH; i++) {
+			for (j = 0; j != CHUNK_HEIGHT; j++) {
 				// Calcula a posição de destino considerando a câmera.
-				SDL_Rect dst = game->world.chunks[i].blocks[j][k].dst;
+				SDL_Rect dst = current_chunk->blocks[i][j].dst;
 
 				dst.x -= game->camera_position.x;
 				dst.y -= game->camera_position.y;
 
 				// Renderiza o mundo no renderizador SDL.
-			    SDL_RenderCopy(game->renderer, game->texture_atlas.blocks, &game->world.chunks[i].blocks[j][k].src, &dst);
+			    SDL_RenderCopy(game->renderer, game->texture_atlas.blocks, &current_chunk->blocks[i][j].src, &dst);
 			}
 		}
-	}
+
+        current_chunk = current_chunk->next_chunk;
+    }
 }
 
 // Renderiza o jogador com animação de movimento.

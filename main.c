@@ -30,7 +30,7 @@
 #define BLOCK_SIZE 10
 #define INVENTORY_BACK_SIZE 25
 #define HEART_SIZE 15
-#define CHUNK_MAX 4
+#define CHUNK_MAX 8
 #define CHUNK_WIDTH 16
 #define CHUNK_HEIGHT 16
 #define PLAYER_WIDTH 50

@@ -28,7 +28,7 @@ void set_texture_transparency(SDL_Texture *texture, const Uint8 alpha) {
 }
 
 // Cria uma textura a partir de um texto.
-SDL_Texture *get_text_texture(SDL_Renderer *renderer, TTF_Font *font, Text *text) {
+SDL_Texture *get_text_texture(SDL_Renderer *renderer, TTF_Font *font, struct Text *text) {
     // Cria uma superfície a partir do arquivo de textura.
     SDL_Surface *surface = TTF_RenderUTF8_Blended(font, text->string, text->color);
 
