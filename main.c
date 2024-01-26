@@ -36,20 +36,21 @@
 #define PLAYER_WIDTH 50
 #define PLAYER_HEIGHT 50
 #define HEART_SIZE 15
-#define GRAVITY_INTENSITY 3
+#define GRAVITY_INTENSITY 1
 
 #include "./sources/custom_error.h"
 #include "./sources/enums.h"
 #include "./sources/structs.h"
 #include "./sources/colors.h"
-#include "./sources/chunk.h"
 #include "./sources/world.h"
 #include "./sources/map.h"
 #include "./sources/inventory.h"
+#include "./sources/camera.h"
 #include "./sources/player.h"
 #include "./sources/texture.h"
 #include "./sources/inputs.h"
 #include "./sources/update.h"
+#include "./sources/window.h"
 #include "./sources/renderer.h"
 #include "./sources/init.h"
 #include "./sources/terminate.h"
@@ -60,6 +61,7 @@ int main() {
 	Game game;
 
     init(&game);
+    load(&game);
 
     Uint32 frame_start = 0, frame_end = 0, elapsed_time = 0;
     const Uint32 delay = 1000 / FPS;
