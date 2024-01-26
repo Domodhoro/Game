@@ -1,7 +1,6 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-// Define algumas cores.
 #define WHITE (SDL_Color){255, 255, 255}
 #define BLACK (SDL_Color){0, 0, 0}
 #define RED (SDL_Color){255, 0, 0}
@@ -15,4 +14,4 @@
 #define PINK (SDL_Color){255, 182, 193}
 #define BROWN (SDL_Color){165, 42, 42}
 
-#endif // COLORS_H
+#endif

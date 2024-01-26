@@ -1,82 +1,89 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-// Struct para representar o jogador.
-typedef struct Player {
-	SDL_Rect src;
-	SDL_Rect dst;
+typedef struct {
+	_Bool show_map_frame;
+}
+Map;
 
-	int speed;
-	int hearts;
+typedef struct {
+	_Bool slot[SLOT_MAX];
+}
+Inventory;
+
+typedef struct {
+	SDL_Rect src, dst;
+
+	int speed, hearts;
 }
 Player;
 
-// Struct para representar um bloco.
-typedef struct Block {
-	SDL_Rect src;
-	SDL_Rect dst;
+typedef struct {
+	SDL_Rect src, dst;
 
 	BLOCK_TYPE type;
 }
 Block;
 
-// Struct para representar um pedaço gerenciável do mundo.
 typedef struct Chunk {
 	Block blocks[CHUNK_WIDTH][CHUNK_HEIGHT];
-
+	SDL_Point position;
+	
 	struct Chunk *next_chunk;
-
-	int x;
-	int y;
 }
 Chunk;
 
-// Struct para representar o mundo.
-typedef struct World {
+typedef struct {
 	Chunk *first_chunk;
 
 	int seed;
 }
 World;
 
-// Struct para armazenar as teclas pressionadas.
-typedef struct Keys {	
-	_Bool W, A, S, D;
+typedef struct {	
+	_Bool W, A, S, D, M;
+	_Bool numbers[NUM_KEYS];
 }
 Keys;
-// Struct para armazenar texturas.
-typedef struct Texture_Atlas {
-	SDL_Texture *text, *player, *blocks, *heart, *inventory_back;
+
+typedef struct {
+	SDL_Texture *text, *player, *blocks, *heart, *inventory_back, *map_frame;
 }
 Texture_Atlas;
 
-// Struct para representar texto.
-typedef struct Text {
+typedef struct {
 	SDL_Rect dst;
 	SDL_Color color;
 
-	const char* string;
+	const char *string;
 }
 Text;
 
-// Struct principal do jogo que contém todas as informações necessárias.
-typedef struct Game {
+typedef struct {
 	lua_State *L;
+
 	SDL_Window *window;
 	SDL_Renderer *renderer;
-	TTF_Font *font;
-	Mix_Music *music;
+
+	SDL_Rect viewport;
+
+	Keys keys;
 
 	_Bool running;
 
-	SDL_Rect viewport;
-	Keys keys;
 	Texture_Atlas texture_atlas;
 	Text text;
+
+	TTF_Font *font;
+	Mix_Music *music;
+
 	SDL_Point camera_position;
+
+	Map map;
+	Inventory inventory;
 	Player player;
 	World world;
 }
 Game;
 
-#endif // STRUCTS_H
+#endif

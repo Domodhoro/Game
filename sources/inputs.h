@@ -1,52 +1,71 @@
 #ifndef INPUTS_H
 #define INPUTS_H
 
-// Trata o evento de pressionamento de tecla.
-void handle_key_down(SDL_KeyboardEvent *event, Keys *keys) {
-	// Verifica se a tecla não está sendo repetida e atualiza o estado da tecla correspondente.
-    if (event->repeat == 0) {
-		if (event->keysym.scancode == SDL_SCANCODE_W) keys->W = true;
-		if (event->keysym.scancode == SDL_SCANCODE_A) keys->A = true;
-		if (event->keysym.scancode == SDL_SCANCODE_S) keys->S = true;
-		if (event->keysym.scancode == SDL_SCANCODE_D) keys->D = true;
-	}
-}
-
-// Trata o evento de soltura de tecla.
-void handle_key_up(SDL_KeyboardEvent *event, Keys *keys) {
-	// Verifica se a tecla não está sendo repetida e atualiza o estado da tecla correspondente.
-    if (event->repeat == 0) {
-		if (event->keysym.scancode == SDL_SCANCODE_W) keys->W = false;
-		if (event->keysym.scancode == SDL_SCANCODE_A) keys->A = false;
-		if (event->keysym.scancode == SDL_SCANCODE_S) keys->S = false;
-		if (event->keysym.scancode == SDL_SCANCODE_D) keys->D = false;
-	}
-}
-
-// Trata eventos gerais, como fechamento de janela e eventos de teclado.
-void handle_events(Game *game) {
-	SDL_Event event;
-
-	// Processa todos os eventos na fila.
-	while (SDL_PollEvent(&event)) {
-		switch (event.type) {
-			// Encerramento da janela.
-	        case SDL_QUIT:
-	            game->running = false;
-
-	            break;
-	        // Tecla pressionada.
-	        case SDL_KEYDOWN:
-	            handle_key_down(&event.key, &game->keys);
-
-	            break;
-	        // Tecla solta.
-	        case SDL_KEYUP:
-	            handle_key_up(&event.key, &game->keys);
-
-	            break;
+static void handle_key(SDL_KeyboardEvent *event, Keys *keys, const _Bool is_key_pressed) {
+	if (event->repeat == 0) {
+    	switch (event->keysym.scancode) {
+    	case SDL_SCANCODE_W:
+    		keys->W = is_key_pressed;
+    		break;
+    	case SDL_SCANCODE_A:
+    		keys->A = is_key_pressed;
+    		break;
+    	case SDL_SCANCODE_S:
+    		keys->S = is_key_pressed;
+    		break;
+    	case SDL_SCANCODE_D:
+    		keys->D = is_key_pressed;
+    		break;
+        case SDL_SCANCODE_M:
+            keys->M = is_key_pressed;
+            break;
+    	case SDL_SCANCODE_1 ... SDL_SCANCODE_0:
+            keys->numbers[event->keysym.scancode - SDL_SCANCODE_1] = is_key_pressed;
+            break;
         }
 	}
 }
 
-#endif // INPUTS_H
+static void handle_key_down(SDL_KeyboardEvent *event, Keys *keys) {
+    handle_key(event, keys, true);
+}
+
+static void handle_key_up(SDL_KeyboardEvent *event, Keys *keys) {
+    handle_key(event, keys, false);
+}
+
+void init_keys(Game *game) {
+	game->keys.W = false;
+    game->keys.A = false;
+    game->keys.S = false;
+    game->keys.D = false;
+
+    int i;
+
+    for (i = 0; i != NUM_KEYS; i++) {
+        game->keys.numbers[i] = false;
+    }
+}
+
+void handle_events(Game *game) {
+	SDL_Event event;
+
+	while (SDL_PollEvent(&event)) {
+		switch (event.type) {
+        case SDL_QUIT:
+            game->running = false;
+
+            break;
+        case SDL_KEYDOWN:
+            handle_key_down(&event.key, &game->keys);
+
+            break;
+        case SDL_KEYUP:
+            handle_key_up(&event.key, &game->keys);
+
+            break;
+        }
+	}
+}
+
+#endif
