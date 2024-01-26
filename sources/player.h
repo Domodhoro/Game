@@ -52,12 +52,14 @@ void move_entity_with_collision(Game *game, DIRECTION direction) {
 	Chunk *current_chunk = game->world.first_chunk;
 
 	while (current_chunk != NULL) {
-		int i = 0, j = 0;
+		int i, j;
 
 		for (i = 0; i != CHUNK_WIDTH; i++) {
 			for (j = 0; j != CHUNK_HEIGHT; j++) {
-				if (SDL_HasIntersection(&game->player.dst, &current_chunk->blocks[i][j].dst)) {
-					move_player(game, reverse_direction(direction));
+				if (current_chunk->blocks[i][j].type != AIR) {
+					if (SDL_HasIntersection(&game->player.dst, &current_chunk->blocks[i][j].dst)) {
+						move_player(game, reverse_direction(direction));
+					}
 				}
 			}
 		}

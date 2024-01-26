@@ -2,6 +2,11 @@
 #define STRUCTS_H
 
 typedef struct {
+	SDL_Rect dst;
+}
+Background;
+
+typedef struct {
 	_Bool show_map_frame;
 }
 Map;
@@ -19,7 +24,7 @@ typedef struct {
 Player;
 
 typedef struct {
-	SDL_Rect src, dst;
+	SDL_Rect dst;
 
 	BLOCK_TYPE type;
 }
@@ -37,6 +42,8 @@ typedef struct {
 	Chunk *first_chunk;
 
 	int seed;
+
+	fnl_state noise;
 }
 World;
 
@@ -47,7 +54,8 @@ typedef struct {
 Keys;
 
 typedef struct {
-	SDL_Texture *text, *player, *blocks, *heart, *inventory_back, *map_frame;
+	SDL_Texture *text, *player, *blocks, *heart;
+	SDL_Texture *inventory_back, *map_frame, *background;
 }
 Texture_Atlas;
 
@@ -83,6 +91,7 @@ typedef struct {
 	Inventory inventory;
 	Player player;
 	World world;
+	Background background;
 }
 Game;
 

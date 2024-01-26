@@ -1,6 +1,14 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+static void render_background(Game *game) {
+	SDL_Rect dst = {
+		0, 0, WINDOW_WIDTH, WINDOW_HEIGHT
+	};
+
+	SDL_RenderCopy(game->renderer, game->texture_atlas.background, NULL, &dst);
+}
+
 static void render_world(Game *game) {
     Chunk *current_chunk = game->world.first_chunk;
 
@@ -9,12 +17,25 @@ static void render_world(Game *game) {
     	
 		for (i = 0; i != CHUNK_WIDTH; i++) {
 			for (j = 0; j != CHUNK_HEIGHT; j++) {
+				SDL_Rect src = {
+					0, 0, 0, 0
+				};
+
+				switch (current_chunk->blocks[i][j].type) {
+				case DIRT:
+					src.x = 0;
+		            src.y = 496;
+		            src.w = 16;
+		            src.h = 16;
+					break;
+				}
+
 				SDL_Rect dst = current_chunk->blocks[i][j].dst;
 
 				dst.x -= game->camera_position.x;
 				dst.y -= game->camera_position.y;
 
-			    SDL_RenderCopy(game->renderer, game->texture_atlas.blocks, &current_chunk->blocks[i][j].src, &dst);
+			    SDL_RenderCopy(game->renderer, game->texture_atlas.blocks, &src, &dst);
 			}
 		}
 
@@ -70,7 +91,7 @@ static void render_inventory_back(Game *game) {
 static void render_map_frame(Game *game) {
 	if (game->map.show_map_frame) {
 		SDL_Rect dst = {
-			WINDOW_WIDTH - MAP_FRAME_SIZE, 0, MAP_FRAME_SIZE, MAP_FRAME_SIZE
+			WINDOW_WIDTH - MAP_FRAME_SIZE - 5, 5, MAP_FRAME_SIZE, MAP_FRAME_SIZE
 		};
 
 		SDL_RenderCopy(game->renderer, game->texture_atlas.map_frame, NULL, &dst);
@@ -94,6 +115,7 @@ void render(Game *game) {
 	SDL_SetRenderDrawColor(game->renderer, 127, 127, 255, 255);
     SDL_RenderClear(game->renderer);
 
+    render_background(game);
     render_world(game);
     render_player(game);
     render_inventory_back(game);

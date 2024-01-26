@@ -46,4 +46,4 @@ void update(Game *game) {
     map_update(game);
 }
 
-#endif // UPDATE_H
+#endif

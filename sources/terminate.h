@@ -25,6 +25,10 @@ static void destroy_textures(Game *game) {
 	if (game->texture_atlas.map_frame != NULL) {
 		SDL_DestroyTexture(game->texture_atlas.map_frame);
 	}
+
+	if (game->texture_atlas.background != NULL) {
+		SDL_DestroyTexture(game->texture_atlas.background);
+	}
 }
 
 void terminate(Game *game) {

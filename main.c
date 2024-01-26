@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <math.h>
 
 #define SDL_HANDLED_MAIN
 
@@ -14,11 +15,15 @@
 #include "./lua54/lualib.h"
 #include "./lua54/lauxlib.h"
 
+#define FNL_IMPL
+
+#include "./FastNoiseLite/FastNoiseLite.h"
+
 #define GAME_TITLE "Game"
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
 #define FPS 60
-#define WORLD_SIZE 2
+#define WORLD_SIZE 4
 #define FONT_SIZE 16
 #define NUM_KEYS 10
 #define SLOT_MAX 10
@@ -27,7 +32,7 @@
 #define BLOCK_SIZE 10
 #define CHUNK_MAX 8
 #define CHUNK_WIDTH 16
-#define CHUNK_HEIGHT 64
+#define CHUNK_HEIGHT 128
 #define PLAYER_WIDTH 50
 #define PLAYER_HEIGHT 50
 #define HEART_SIZE 15

@@ -15,7 +15,7 @@ static _Bool chunk_exists(World *world, const int x, const int y) {
     return false;
 }
 
-Chunk *create_chunk(const int x, const int y) {
+static Chunk *create_chunk(Game *game, const int x, const int y) {
 	Chunk *new_chunk = malloc(sizeof(Chunk));
 
 	if (new_chunk == NULL) {
@@ -26,17 +26,24 @@ Chunk *create_chunk(const int x, const int y) {
 
 	for (i = 0; i != CHUNK_WIDTH; i++) {
 		for (j = 0; j != CHUNK_HEIGHT; j++) {
-			new_chunk->blocks[i][j].type = DIRT;
+            int block_x = x + (i * BLOCK_SIZE), block_y = y + (j * BLOCK_SIZE);
 
-			new_chunk->blocks[i][j].src.x = 0;
-			new_chunk->blocks[i][j].src.y = 496;
-			new_chunk->blocks[i][j].src.w = 16;
-			new_chunk->blocks[i][j].src.h = 16;
+            if (fnlGetNoise2D(&game->world.noise, block_x, block_y) > 0.25) {
+                new_chunk->blocks[i][j].type = DIRT;
 
-			new_chunk->blocks[i][j].dst.x = x + (i * BLOCK_SIZE);
-			new_chunk->blocks[i][j].dst.y = y + (j * BLOCK_SIZE);
-			new_chunk->blocks[i][j].dst.w = BLOCK_SIZE;
-			new_chunk->blocks[i][j].dst.h = BLOCK_SIZE;
+                new_chunk->blocks[i][j].dst.x = block_x;
+                new_chunk->blocks[i][j].dst.y = block_y;
+                new_chunk->blocks[i][j].dst.w = BLOCK_SIZE;
+                new_chunk->blocks[i][j].dst.h = BLOCK_SIZE;
+            }
+            else {
+                new_chunk->blocks[i][j].type = AIR;
+
+                new_chunk->blocks[i][j].dst.x = block_x;
+                new_chunk->blocks[i][j].dst.y = block_y;
+                new_chunk->blocks[i][j].dst.w = BLOCK_SIZE;
+                new_chunk->blocks[i][j].dst.h = BLOCK_SIZE;
+            }
 		}
 	}
 
@@ -48,15 +55,15 @@ Chunk *create_chunk(const int x, const int y) {
 	return new_chunk;
 }
 
-void add_chunk(World *world, const int x, const int y) {
-    if (!chunk_exists(world, x, y)) {
-        Chunk *new_chunk = create_chunk(x, y);
+void add_chunk(Game *game, const int x, const int y) {
+    if (!chunk_exists(&game->world, x, y)) {
+        Chunk *new_chunk = create_chunk(game, x, y);
 
-        if (world->first_chunk == NULL) {
-            world->first_chunk = new_chunk;
+        if (game->world.first_chunk == NULL) {
+            game->world.first_chunk = new_chunk;
         } 
         else {
-            Chunk *current_chunk = world->first_chunk;
+            Chunk *current_chunk = game->world.first_chunk;
 
             while (current_chunk->next_chunk != NULL) {
                 current_chunk = current_chunk->next_chunk;
@@ -67,8 +74,8 @@ void add_chunk(World *world, const int x, const int y) {
     }
 }
 
-void remove_chunk(World *world, const int x, const int y) {
-	Chunk *current_chunk = world->first_chunk, *prev = NULL;
+void remove_chunk(Game *game, const int x, const int y) {
+	Chunk *current_chunk = game->world.first_chunk, *prev = NULL;
 
     while (current_chunk != NULL && (current_chunk->position.x != x || current_chunk->position.y != y)) {
         prev = current_chunk;
@@ -78,7 +85,7 @@ void remove_chunk(World *world, const int x, const int y) {
 
     if (current_chunk != NULL) {
         if (prev == NULL) {
-            world->first_chunk = current_chunk->next_chunk;
+            game->world.first_chunk = current_chunk->next_chunk;
         }
         else {
             prev->next_chunk = current_chunk->next_chunk;

@@ -3,6 +3,11 @@
 
 void create_world(Game *game) {
 	game->world.seed = 1 + rand() % 9999;
+
+    game->world.noise = fnlCreateState();
+    
+    game->world.noise.noise_type = FNL_NOISE_OPENSIMPLEX2;
+    game->world.noise.seed = game->world.seed;
 	
 	game->world.first_chunk = NULL;
 }
@@ -32,7 +37,7 @@ void world_update(Game *game) {
     int i;
 
     for (i = -WORLD_SIZE; i != WORLD_SIZE + 1; i++) {
-    	add_chunk(&game->world, (player_chunk_x + i) * CHUNK_WIDTH * BLOCK_SIZE, 700);
+    	add_chunk(game, (player_chunk_x + i) * CHUNK_WIDTH * BLOCK_SIZE, 700);
     }
 }
 

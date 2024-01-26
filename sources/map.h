@@ -2,7 +2,7 @@
 #define MAP_H
 
 void init_map(Game *game) {
-	game->map.show_map_frame = false;
+	game->map.show_map_frame = true;
 }
 
 void map_update(Game *game) {
