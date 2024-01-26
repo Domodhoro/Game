@@ -23,7 +23,7 @@
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
 #define FPS 60
-#define WORLD_SIZE 4
+#define WORLD_SIZE 2
 #define FONT_SIZE 16
 #define NUM_KEYS 10
 #define SLOT_MAX 10
@@ -36,7 +36,7 @@
 #define PLAYER_WIDTH 50
 #define PLAYER_HEIGHT 50
 #define HEART_SIZE 15
-#define GRAVITY_INTENSITY 1
+#define GRAVITY_INTENSITY 3
 
 #include "./sources/custom_error.h"
 #include "./sources/enums.h"

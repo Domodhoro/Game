@@ -103,14 +103,32 @@ void do_world(Game *game) {
         player_chunk_x = ((player_chunk_x + 1) / CHUNK_WIDTH) - 1;
     }
 
-    int i;
+    int offset;
 
-    for (i = -WORLD_SIZE; i != WORLD_SIZE + 1; i++) {
-        int x = (player_chunk_x + i) * CHUNK_WIDTH * BLOCK_SIZE, y = 700;
+    for (offset = -WORLD_SIZE; offset != WORLD_SIZE + 1; offset++) {
+        int x = (player_chunk_x + offset) * CHUNK_WIDTH * BLOCK_SIZE, y = 700;
 
         if (!chunk_exists(&game->world, x, y)) {
             add_chunk(game, x, y);
         }
+    }
+
+    Chunk *current_chunk = game->world.first_chunk;
+
+    while (current_chunk != NULL) {
+        int chunk_x = current_chunk->position.x, y = 700;
+
+        int distance_to_player = abs(chunk_x - game->player.dst.x);
+
+        if (distance_to_player > 500) {
+            if (chunk_exists(&game->world, chunk_x, y)) {
+                remove_chunk(game, chunk_x, y);
+
+                break;
+            }
+        }
+
+        current_chunk = current_chunk->next_chunk;
     }
 }
 

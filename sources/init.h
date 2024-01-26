@@ -87,7 +87,7 @@ static void init_world(Game *game) {
 }
 
 static void init_player(Game *game) {
-	game->player.speed = 3;
+	game->player.speed = 5;
 	game->player.hearts = 10;
 
 	game->player.src.x = 0;
