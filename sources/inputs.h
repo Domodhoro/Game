@@ -19,6 +19,9 @@ static void handle_key(SDL_KeyboardEvent *event, Keys *keys, const _Bool is_key_
         case SDL_SCANCODE_M:
             keys->M = is_key_pressed;
             break;
+        case SDL_SCANCODE_SPACE:
+            keys->SPACE = is_key_pressed;
+            break;
     	case SDL_SCANCODE_1 ... SDL_SCANCODE_0:
             keys->numbers[event->keysym.scancode - SDL_SCANCODE_1] = is_key_pressed;
             break;

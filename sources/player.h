@@ -53,18 +53,32 @@ static void move_entity_with_collision(Game *game, DIRECTION direction) {
     }
 }
 
-static void handle_gravity(Game *game) {
+static void handle_gravity(Game *game, const int gravity_intensity) {
 	int step = 0;
 
-	while (step != GRAVITY_INTENSITY) {
+	while (step != gravity_intensity) {
 		move_entity_with_collision(game, DOWN);
 
 		step++;
 	}
 }
 
+static void jump(Game *game, const int jump_speed) {
+	int step = 0;
+
+	while (step != jump_speed) {
+		move_entity_with_collision(game, UP);
+
+		step++;
+	}
+}
+
 void update_player(Game *game) {
-	handle_gravity(game);
+	handle_gravity(game, 3);
+
+	if (game->keys.SPACE) {
+		jump(game, 10);
+	}
 
 	int step = 0;
 

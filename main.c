@@ -36,7 +36,6 @@
 #define PLAYER_WIDTH 50
 #define PLAYER_HEIGHT 50
 #define HEART_SIZE 15
-#define GRAVITY_INTENSITY 3
 
 #include "./sources/custom_error.h"
 #include "./sources/enums.h"

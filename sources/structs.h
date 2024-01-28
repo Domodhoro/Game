@@ -56,7 +56,7 @@ typedef struct World {
 World;
 
 typedef struct Keys {	
-	_Bool W, A, S, D, M;
+	_Bool W, A, S, D, M, SPACE;
 	_Bool numbers[NUM_KEYS];
 }
 Keys;
