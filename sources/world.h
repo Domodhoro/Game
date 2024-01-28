@@ -93,7 +93,7 @@ static _Bool chunk_exists(World *world, const int x, const int y) {
     return false;
 }
 
-void do_world(Game *game) {
+void update_world(Game *game) {
     int player_chunk_x = game->player.dst.x / BLOCK_SIZE;
 
     if (player_chunk_x >= 0) {

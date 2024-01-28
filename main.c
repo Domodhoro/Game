@@ -20,8 +20,8 @@
 #include "./FastNoiseLite/FastNoiseLite.h"
 
 #define GAME_TITLE "Game"
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
+#define WINDOW_WIDTH 2000
+#define WINDOW_HEIGHT 900
 #define FPS 60
 #define WORLD_SIZE 2
 #define FONT_SIZE 16

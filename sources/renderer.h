@@ -6,7 +6,7 @@ static void render_background(Game *game) {
 		0, 0, WINDOW_WIDTH, WINDOW_HEIGHT
 	};
 
-	SDL_RenderCopy(game->renderer, game->texture_atlas.background, NULL, &dst);
+	SDL_RenderCopy(game->renderer, game->background.texture, NULL, &dst);
 }
 
 static void render_world(Game *game) {
@@ -35,7 +35,7 @@ static void render_world(Game *game) {
 				dst.x -= game->camera_position.x;
 				dst.y -= game->camera_position.y;
 
-			    SDL_RenderCopy(game->renderer, game->texture_atlas.blocks, &src, &dst);
+			    SDL_RenderCopy(game->renderer, game->world.block_texture, &src, &dst);
 			}
 		}
 
@@ -63,10 +63,10 @@ static void render_player(Game *game) {
 	dst.x -= game->camera_position.x;
 	dst.y -= game->camera_position.y;
 
-    SDL_RenderCopy(game->renderer, game->texture_atlas.player, &game->player.src, &dst);
+    SDL_RenderCopy(game->renderer, game->player.texture, &game->player.src, &dst);
 }
 
-static void render_inventory_back(Game *game) {
+static void render_inventory(Game *game) {
 	int i;
 
     for (i = 0; i != SLOT_MAX; i++) {
@@ -78,23 +78,23 @@ static void render_inventory_back(Game *game) {
 		};
 
 		if (game->inventory.slot[i]) {
-			set_texture_transparency(game->texture_atlas.inventory_back, 255);
+			set_texture_transparency(game->inventory.texture, 255);
 		}
 		else {
-			set_texture_transparency(game->texture_atlas.inventory_back, 127);
+			set_texture_transparency(game->inventory.texture, 127);
 		}
 
-		SDL_RenderCopy(game->renderer, game->texture_atlas.inventory_back, NULL, &dst);
+		SDL_RenderCopy(game->renderer, game->inventory.texture, NULL, &dst);
     }
 }
 
-static void render_map_frame(Game *game) {
+static void render_map(Game *game) {
 	if (game->map.show_map_frame) {
 		SDL_Rect dst = {
 			WINDOW_WIDTH - MAP_FRAME_SIZE - 5, 5, MAP_FRAME_SIZE, MAP_FRAME_SIZE
 		};
 
-		SDL_RenderCopy(game->renderer, game->texture_atlas.map_frame, NULL, &dst);
+		SDL_RenderCopy(game->renderer, game->map.frame_texture, NULL, &dst);
 	}
 }
 
@@ -118,8 +118,8 @@ void render(Game *game) {
     render_background(game);
     render_world(game);
     render_player(game);
-    render_inventory_back(game);
-    render_map_frame(game);
+    render_inventory(game);
+    render_map(game);
 
     SDL_RenderSetViewport(game->renderer, &game->viewport);
 

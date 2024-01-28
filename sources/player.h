@@ -63,7 +63,7 @@ static void handle_gravity(Game *game) {
 	}
 }
 
-void do_player(Game *game) {
+void update_player(Game *game) {
 	handle_gravity(game);
 
 	int step = 0;

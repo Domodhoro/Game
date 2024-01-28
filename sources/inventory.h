@@ -9,7 +9,7 @@ void inventory_reset(Game *game) {
 	}
 }
 
-void do_inventory(Game *game) {
+void update_inventory(Game *game) {
     int i;
 
     for (i = 0; i != NUM_KEYS; i++) {

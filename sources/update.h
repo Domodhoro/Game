@@ -2,11 +2,11 @@
 #define UPDATE_H
 
 void update(Game *game) {
-	do_player(game);
-	do_world(game);
-    do_camera(game);
-    do_inventory(game);
-    do_map(game);
+	update_player(game);
+	update_world(game);
+    update_camera(game);
+    update_inventory(game);
+    update_map(game);
 }
 
 #endif

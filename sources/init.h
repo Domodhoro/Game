@@ -122,13 +122,11 @@ void init(Game *game) {
 }
 
 void load(Game *game) {
-	game->texture_atlas.text = NULL;
-	game->texture_atlas.player = get_texture(game->renderer, "./textures/player.png");
-	game->texture_atlas.blocks = get_texture(game->renderer, "./textures/blocks.png");
-	game->texture_atlas.heart = get_texture(game->renderer, "./textures/heart.png");
-	game->texture_atlas.inventory_back = get_texture(game->renderer, "./textures/inventory_back.png");
-	game->texture_atlas.map_frame = get_texture(game->renderer, "./textures/map_frame.png");
-	game->texture_atlas.background = get_texture(game->renderer, "./textures/background.png");
+	game->player.texture = get_texture(game->renderer, "./textures/player.png");
+	game->world.block_texture = get_texture(game->renderer, "./textures/blocks.png");
+	game->inventory.texture = get_texture(game->renderer, "./textures/inventory_back.png");
+	game->map.frame_texture = get_texture(game->renderer, "./textures/map_frame.png");
+	game->background.texture = get_texture(game->renderer, "./textures/background.png");
 }
 
 #endif

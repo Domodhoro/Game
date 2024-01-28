@@ -12,32 +12,24 @@ void terminate(Game *game) {
         }
     }
 
-	if (game->texture_atlas.text != NULL) {
-		SDL_DestroyTexture(game->texture_atlas.text);
+	if (game->player.texture != NULL) {
+		SDL_DestroyTexture(game->player.texture);
 	}
 
-	if (game->texture_atlas.player != NULL) {
-		SDL_DestroyTexture(game->texture_atlas.player);
+	if (game->world.block_texture != NULL) {
+		SDL_DestroyTexture(game->world.block_texture);
 	}
 
-	if (game->texture_atlas.blocks != NULL) {
-		SDL_DestroyTexture(game->texture_atlas.blocks);
+	if (game->inventory.texture != NULL) {
+		SDL_DestroyTexture(game->inventory.texture);
 	}
 
-	if (game->texture_atlas.heart != NULL) {
-		SDL_DestroyTexture(game->texture_atlas.heart);
+	if (game->map.frame_texture != NULL) {
+		SDL_DestroyTexture(game->map.frame_texture);
 	}
 
-	if (game->texture_atlas.inventory_back != NULL) {
-		SDL_DestroyTexture(game->texture_atlas.inventory_back);
-	}
-
-	if (game->texture_atlas.map_frame != NULL) {
-		SDL_DestroyTexture(game->texture_atlas.map_frame);
-	}
-
-	if (game->texture_atlas.background != NULL) {
-		SDL_DestroyTexture(game->texture_atlas.background);
+	if (game->background.texture != NULL) {
+		SDL_DestroyTexture(game->background.texture);
 	}
 
 	if (game->L != NULL) {

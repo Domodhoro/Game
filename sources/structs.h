@@ -1,29 +1,35 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-typedef struct {
+typedef struct Background {
+	SDL_Texture *texture;
 	SDL_Rect dst;
 }
 Background;
 
-typedef struct {
+typedef struct Map {
+	SDL_Texture *frame_texture;
+
 	_Bool show_map_frame;
 }
 Map;
 
-typedef struct {
+typedef struct Inventory {
+	SDL_Texture *texture;
+
 	_Bool slot[SLOT_MAX];
 }
 Inventory;
 
-typedef struct {
+typedef struct Player {
+	SDL_Texture *texture;
 	SDL_Rect src, dst;
 
 	int speed, hearts;
 }
 Player;
 
-typedef struct {
+typedef struct Block {
 	SDL_Rect dst;
 
 	BLOCK_TYPE type;
@@ -38,7 +44,9 @@ typedef struct Chunk {
 }
 Chunk;
 
-typedef struct {
+typedef struct World {
+	SDL_Texture *block_texture;
+
 	Chunk *first_chunk;
 
 	int seed;
@@ -47,27 +55,14 @@ typedef struct {
 }
 World;
 
-typedef struct {	
+typedef struct Keys {	
 	_Bool W, A, S, D, M;
 	_Bool numbers[NUM_KEYS];
 }
 Keys;
 
-typedef struct {
-	SDL_Texture *text, *player, *blocks, *heart;
-	SDL_Texture *inventory_back, *map_frame, *background;
-}
-Texture_Atlas;
 
-typedef struct {
-	SDL_Rect dst;
-	SDL_Color color;
-
-	const char *string;
-}
-Text;
-
-typedef struct {
+typedef struct Game {
 	lua_State *L;
 
 	SDL_Window *window;
@@ -78,9 +73,6 @@ typedef struct {
 	Keys keys;
 
 	_Bool running;
-
-	Texture_Atlas texture_atlas;
-	Text text;
 
 	TTF_Font *font;
 	Mix_Music *music;
