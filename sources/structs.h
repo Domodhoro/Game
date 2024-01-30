@@ -61,19 +61,17 @@ typedef struct Keys {
 }
 Keys;
 
-
 typedef struct Game {
-	lua_State *L;
-
 	SDL_Window *window;
+	SDL_Surface *window_icon_surface;
 	SDL_Renderer *renderer;
-
 	SDL_Rect viewport;
 
 	Keys keys;
 
 	_Bool running;
 
+	lua_State *L;
 	TTF_Font *font;
 	Mix_Music *music;
 

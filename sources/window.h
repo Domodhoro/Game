@@ -9,6 +9,14 @@ void create_window(Game *game) {
 	if (game->window == NULL) {
 		custom_error(SDL_GetError(), __FILE__, __LINE__);
 	}
+
+	SDL_WarpMouseInWindow(game->window, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+}
+
+void set_window_icon(Game *game, const char* icon_path) {
+	game->window_icon_surface = create_surface_IMG(icon_path);
+
+	SDL_SetWindowIcon(game->window, game->window_icon_surface);
 }
 
 #endif

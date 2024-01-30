@@ -14,6 +14,14 @@ static Chunk *create_chunk(Game *game, const int x, const int y) {
         for (j = 0; j != CHUNK_HEIGHT; j++) {
             int block_x = x + (i * BLOCK_SIZE), block_y = y + (j * BLOCK_SIZE);
 
+            new_chunk->blocks[i][j].type = DIRT;
+
+            new_chunk->blocks[i][j].dst.x = block_x;
+            new_chunk->blocks[i][j].dst.y = block_y;
+            new_chunk->blocks[i][j].dst.w = BLOCK_SIZE;
+            new_chunk->blocks[i][j].dst.h = BLOCK_SIZE;
+
+            /*
             if (fnlGetNoise2D(&game->world.noise, block_x, block_y) > 0.25) {
                 new_chunk->blocks[i][j].type = DIRT;
 
@@ -30,6 +38,7 @@ static Chunk *create_chunk(Game *game, const int x, const int y) {
                 new_chunk->blocks[i][j].dst.w = BLOCK_SIZE;
                 new_chunk->blocks[i][j].dst.h = BLOCK_SIZE;
             }
+            */
         }
     }
 
@@ -120,7 +129,7 @@ void update_world(Game *game) {
 
         int distance_to_player = abs(chunk_x - game->player.dst.x);
 
-        if (distance_to_player > 500) {
+        if (distance_to_player > 200 * WORLD_SIZE) {
             if (chunk_exists(&game->world, chunk_x, y)) {
                 remove_chunk(game, chunk_x, y);
 

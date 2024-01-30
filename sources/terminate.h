@@ -1,7 +1,7 @@
 #ifndef TERMINATE_H
 #define TERMINATE_H
 
-void terminate(Game *game) {
+static void destroy_world(Game *game) {
 	while (game->world.first_chunk != NULL) {
         Chunk *temp = game->world.first_chunk;
 
@@ -12,12 +12,26 @@ void terminate(Game *game) {
         }
     }
 
+    if (game->world.block_texture != NULL) {
+		SDL_DestroyTexture(game->world.block_texture);
+	}
+}
+
+static void destroy_window(Game *game) {
+	if (game->window_icon_surface != NULL) {
+        SDL_FreeSurface(game->window_icon_surface);
+    }
+
+	if (game->window != NULL) {
+		SDL_DestroyWindow(game->window);
+	}
+}
+
+void terminate(Game *game) {
+	destroy_world(game);
+
 	if (game->player.texture != NULL) {
 		SDL_DestroyTexture(game->player.texture);
-	}
-
-	if (game->world.block_texture != NULL) {
-		SDL_DestroyTexture(game->world.block_texture);
 	}
 
 	if (game->inventory.texture != NULL) {
@@ -48,9 +62,7 @@ void terminate(Game *game) {
 		SDL_DestroyRenderer(game->renderer);
 	}
 
-	if (game->window != NULL) {
-		SDL_DestroyWindow(game->window);
-	}
+	destroy_window(game);
 	
 	IMG_Quit();
 	TTF_Quit();

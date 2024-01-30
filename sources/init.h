@@ -1,6 +1,12 @@
 #ifndef INIT_H
 #define INIT_H
 
+static void init_SDL() {
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		custom_error(SDL_GetError(), __FILE__, __LINE__);
+	}
+}
+
 static void init_lua(Game* game) {
 	game->L = luaL_newstate();
 
@@ -13,12 +19,6 @@ static void init_lua(Game* game) {
     if (luaL_dofile(game->L, "./scripts/script.lua") < 0) {
     	custom_error(lua_tostring(game->L, -1), __FILE__, __LINE__);
     }
-}
-
-static void init_SDL() {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		custom_error(SDL_GetError(), __FILE__, __LINE__);
-	}
 }
 
 static void init_keys(Game *game) {
@@ -102,12 +102,14 @@ static void init_player(Game *game) {
 }
 
 void init(Game *game) {
-	init_lua(game);
 	init_SDL();
 	
 	create_window(game);
 	create_renderer(game);
+
+	set_window_icon(game, "./textures/icon.png");
 	
+	init_lua(game);
 	init_keys(game);
 	init_SDL_image(game);
 	init_SDL_ttf(game);
