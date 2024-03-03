@@ -20,8 +20,8 @@
 #include "./FastNoiseLite/FastNoiseLite.h"
 
 #define GAME_TITLE "Game"
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 600
 #define FPS 60
 #define WORLD_SIZE 4
 #define FONT_SIZE 16
@@ -36,6 +36,7 @@
 #define PLAYER_WIDTH 50
 #define PLAYER_HEIGHT 50
 #define HEART_SIZE 15
+#define GRAVITY_INTENSITY 10
 
 #include "./sources/custom_error.h"
 #include "./sources/enums.h"
@@ -52,25 +53,30 @@
 #include "./sources/window.h"
 #include "./sources/renderer.h"
 #include "./sources/init.h"
+#include "./sources/load.h"
 #include "./sources/terminate.h"
 
 int main() {
     srand((unsigned int)time(NULL));
 
-	Game game;
+	Game *game = malloc(sizeof(Game));
 
-    init(&game);
-    load(&game);
+    if (game == NULL) {
+        custom_error("Failed to allocate memory.", __FILE__, __LINE__);
+    }
+
+    init(game);
+    load(game);
 
     Uint32 frame_start = 0, frame_end = 0, elapsed_time = 0;
     const Uint32 delay = 1000 / FPS;
 
-    while (game.running) {
+    while (game->running) {
         frame_start = SDL_GetTicks();
 
-        handle_events(&game);
-        update(&game);
-        render(&game);
+        handle_events(game);
+        update(game);
+        render(game);
 
         frame_end = SDL_GetTicks();
 
@@ -81,7 +87,11 @@ int main() {
         }
     }
 
-    terminate(&game);
+    terminate(game);
+
+    if (game != NULL) {
+        free(game);
+    }
 
     return 0;
 }

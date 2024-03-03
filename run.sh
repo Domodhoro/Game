@@ -5,7 +5,7 @@ source_file="main.c"
 executable="Game"
 
 if ! command -v gcc &> /dev/null; then
-    echo "Erro: GCC não encontrado. Por favor, instale o GCC."
+    echo "Erro: gcc não encontrado. Por favor, instale o gcc."
     
     exit 1
 fi
